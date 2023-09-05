@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "qhuman-entanglementer"
+version = "0.1.0"
+description = ""
+authors = ["Tzion <tzion12345@gmail.com>"]
+readme = "README.md"
+packages = [{include = "qhuman_entanglementer", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
