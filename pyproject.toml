@@ -1,13 +1,15 @@
 [tool.poetry]
-name = "qhuman-entanglementer"
+name = "qhuman-entangler"
 version = "0.1.0"
 description = ""
 authors = ["Tzion <tzion12345@gmail.com>"]
 readme = "README.md"
-packages = [{include = "qhuman_entanglementer", from = "src"}]
+packages = [{include = "qhuman_entangler", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+pygame = "^2.5.2"
+gtts = "^2.3.2"
 
 
 [build-system]
