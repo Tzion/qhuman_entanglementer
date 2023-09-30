@@ -22,14 +22,16 @@ class BaseAudioPlayer(AudioPlayerInterface):
     def play_sound(self, name: str):
         sound = pygame.mixer.Sound(name)
         sound.play()
+        pygame.time.wait(int(sound.get_length() * 1000))  # Wait for the sound to finish
+
 
     def play_speech(self, text: str):
         tts = gTTS(text)
-        audio_data = io.BytesIO()
-        tts.write_to_fp(audio_data)
-        audio_data.seek(0)
-        sound = pygame.mixer.Sound(buffer=audio_data.read())
-        sound.play()
+        try:
+            tts.save("speech.mp3")
+            self.play_sound("speech.mp3")
+        finally:
+            os.remove("speech.mp3")
 
     def stop(self):
         pygame.mixer.stop()
