@@ -1,2 +1,2 @@
-# The Qhuman Entangler - a Midburn art constellation
-Establishing a Quantum Connection Between Two Human Beings
+# The Quanthuman Entangler - a Midburn art constellation
+Establishing a Quantum Entanglement Between Two Human Beings
