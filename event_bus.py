@@ -1,5 +1,6 @@
 import keyboard
 from abc import ABC, abstractmethod
+from logger import log
 
 class EventBus(ABC):
     def __init__(self):
@@ -28,5 +29,6 @@ class KeyboardEventBus(EventBus):
     def wait_for_event(self):
         while True:
             event = keyboard.read_event()
+            log.info('Received keyboard event: %s', event)
             self.post(event) 
 
