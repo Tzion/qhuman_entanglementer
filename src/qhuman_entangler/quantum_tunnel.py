@@ -7,7 +7,7 @@ class QuantumTunnel(Subscriber):
         self.state = 'idle'
 
     def handle_event(self, event):
-        log.debug("QuantumTunnel received event of type %s: %s ", event.type if hasattr(event.type) else None, event)
+        log.debug("QuantumTunnel received event of type %s: %s ", event.type if hasattr(event, 'type') else None, event)
         if event.type == 'explain':
             self.handle_explain_event() 
         if event.type == 'contact':
@@ -32,4 +32,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-import gtts
