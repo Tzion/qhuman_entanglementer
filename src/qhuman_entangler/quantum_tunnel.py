@@ -1,10 +1,12 @@
 from event_bus import KeyboardEventBus, Subscriber
-from logger import log
+from logger import defaultLogger as log
+from audio_manager import AudioPlayer
 import time
 
 class QuantumTunnel(Subscriber):
     def __init__(self):
         self.state = 'idle'
+        self.audio_player = AudioPlayer()
 
     def handle_event(self, event):
         log.debug("QuantumTunnel received event of type %s: %s ", event.type if hasattr(event, 'type') else None, event)
@@ -18,7 +20,7 @@ class QuantumTunnel(Subscriber):
         pass
 
     def handle_explain_event(self):
-        time.sleep(3)
+        self.audio_player.play_sound("media/speech/explain_short_hebrew.mp3")
 
         
 

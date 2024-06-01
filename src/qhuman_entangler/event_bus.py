@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 import keyboard
-from logger import log
-import pdb
+from logger import defaultLogger as log
 
 class Subscriber(ABC):
     @abstractmethod
@@ -36,11 +35,14 @@ class GpioEventBus(EventBus):
 class KeyboardEventBus(EventBus):
     def wait_for_events(self):
         while True:
-            event = keyboard.read_event()
-            log.info('Received keyboard event: %s: %s', event, event.__dict__)
-            if event.scan_code == 12:  # the buttun 'q'
-                event.type = 'contact'
-            if event.scan_code == 14:  # the button 'e'
-                event.type = 'explain'
-            self.post(event) 
+            try:
+                event = keyboard.read_event()
+                log.info('Received keyboard event: %s: %s', event, event.__dict__)
+                if event.scan_code == 12:  # the buttun 'q'
+                    event.type = 'contact'
+                if event.scan_code == 14:  # the button 'e'
+                    event.type = 'explain'
+                self.post(event) 
+            except Exception as e:
+                log.error('Error while waiting for events: %s', e)
 
