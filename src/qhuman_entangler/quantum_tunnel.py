@@ -1,4 +1,4 @@
-from event_bus import KeyboardEventBus, Subscriber
+from event_bus import KeyboardEventBus, Subscriber, GpioEventBus
 from logger import defaultLogger as log
 from audio_manager import AudioPlayer
 from leds_manager import LedsManager
@@ -35,6 +35,7 @@ def main():
     quantum_tunnel = QuantumTunnel()
     quantum_tunnel.start()
     event_bus = KeyboardEventBus()
+    event_bus = GpioEventBus()
     event_bus.subscribe(quantum_tunnel)
     event_bus.wait_for_events()
 
