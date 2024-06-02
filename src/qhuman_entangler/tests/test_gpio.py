@@ -1,21 +1,21 @@
 import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
-gpio_pins = list(range(2, 28))  # Read all GPIO pins on Raspberry Pi
+gpio_pins = list(range(2, 27))  # Read all GPIO pins on Raspberry Pi
 
 def test_read_gpio_pins():
-    gpio_pins = [13]
-    for pin in gpio_pins:
-        GPIO.setup(pin, GPIO.IN)
-
     def handle_gpio_change(pin):
         print(f"GPIO pin {pin} changed")
 
-    try:
-        GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
-    except RuntimeError:
-        GPIO.remove_event_detect(pin)
-        GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
+    for pin in gpio_pins:
+        GPIO.setup(pin, GPIO.IN)
+        try:
+            print(f"adding event detection for pin {pin}")
+            GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
+        except RuntimeError:
+            print('faile')
+            GPIO.remove_event_detect(pin)
+            GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
 
     try:
         while True:
