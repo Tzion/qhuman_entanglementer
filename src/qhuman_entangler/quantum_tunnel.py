@@ -1,12 +1,18 @@
 from event_bus import KeyboardEventBus, Subscriber
 from logger import defaultLogger as log
 from audio_manager import AudioPlayer
+from leds_manager import LedsManager
 import time
 
 class QuantumTunnel(Subscriber):
     def __init__(self):
         self.state = 'idle'
         self.audio_player = AudioPlayer()
+        self.leds_manager =  LedsManager()
+    
+    def start(self):
+        self.leds_manager.run_sequence('idle')
+
 
     def handle_event(self, event):
         log.debug("QuantumTunnel received event of type %s: %s ", event.type if hasattr(event, 'type') else None, event)
@@ -27,6 +33,7 @@ class QuantumTunnel(Subscriber):
 
 def main():
     quantum_tunnel = QuantumTunnel()
+    quantum_tunnel.start()
     event_bus = KeyboardEventBus()
     event_bus.subscribe(quantum_tunnel)
     event_bus.wait_for_events()

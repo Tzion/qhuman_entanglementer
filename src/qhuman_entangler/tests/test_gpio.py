@@ -27,9 +27,10 @@ def test_read_gpio_pins():
 
 
 def test_poll_gpio():
+    for pin in gpio_pins:
+        GPIO.setup(pin, GPIO.IN)
     while True:
         for pin in gpio_pins:
-            GPIO.setup(pin, GPIO.IN)
             print(f"GPIO pin {pin} is {GPIO.input(pin)}")
         time.sleep(0.1)
     
