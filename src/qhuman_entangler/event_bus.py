@@ -42,13 +42,13 @@ class GpioEventBus(EventBus):
     def wait_for_events(self):
         while True:
             try:
-                current_values = []
+                last_read = None
                 for pin in self.pins:
-                    value = GPIO.input(pin)
-                    if value != current_values[pin]:
-                        event = {'pin': pin, 'value': value, type: 'explain'}
+                    new_read = GPIO.input(pin)
+                    if new_read != last_read:
+                        event = {'pin': pin, 'value': new_read, type: 'explain'}
                         self.post(event)
-                        current_values[pin] = value
+                        last_read = new_read
             except Exception as e:
                 log.error('Error while waiting for gpio events: %s', e)
                     
