@@ -30,7 +30,7 @@ class AudioPlayer(AudioPlayerInterface):
         log.info('Playing sound: %s', name)
         sound = pygame.mixer.Sound(name)
         sound.play()
-        pygame.time.wait(int(sound.get_length() * 1000))  # Wait for the sound to finish
+        # pygame.time.wait(int(sound.get_length() * 1000))  # Wait for the sound to finish
 
 
     def play_speech(self, text: str):

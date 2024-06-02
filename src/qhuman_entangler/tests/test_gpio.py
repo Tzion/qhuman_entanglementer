@@ -11,7 +11,10 @@ def test_read_gpio_pins():
     def handle_gpio_change(pin):
         print(f"GPIO pin {pin} changed")
 
-    for pin in gpio_pins:
+    try:
+        GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
+    except RuntimeError:
+        GPIO.remove_event_detect(pin)
         GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
 
     try:
