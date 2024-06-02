@@ -3,7 +3,7 @@ import time
 from gpiozero import Button
 
 GPIO.setmode(GPIO.BCM)
-gpio_pins = list(range(2, 27))  # Read all GPIO pins on Raspberry Pi
+gpio_pins = list(range(2, 28))  # Read all GPIO pins on Raspberry Pi
 
 def test_read_gpio_pins():
     def handle_gpio_change(pin):
@@ -29,6 +29,7 @@ def test_read_gpio_pins():
 def test_poll_gpio():
     while True:
         for pin in gpio_pins:
+            GPIO.setup(pin, GPIO.IN)
             print(f"GPIO pin {pin} is {GPIO.input(pin)}")
         time.sleep(0.1)
     
@@ -48,4 +49,4 @@ def test_read_gpio_pins__gpiozero():
             pass
 
 if __name__ == "__main__":
-    test_read_gpio_pins__gpiozero()
+    test_poll_gpio()
