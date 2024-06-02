@@ -1,21 +1,19 @@
-Package                                  Version
----------------------------------------- -------
-Adafruit-Blinka                          8.39.2
-adafruit-circuitpython-busdevice         5.2.9
-adafruit-circuitpython-connectionmanager 3.1.0
-adafruit-circuitpython-led-animation     2.9.0
-adafruit-circuitpython-neopixel          6.3.11
-adafruit-circuitpython-pixelbuf          2.0.4
-adafruit-circuitpython-requests          4.0.0
-adafruit-circuitpython-typing            1.10.3
-Adafruit-PlatformDetect                  3.63.0
-Adafruit-PureIO                          1.1.11
-pip                                      23.0.1
-pyftdi                                   0.55.4
-pyserial                                 3.5
-pyusb                                    1.2.1
-RPi.GPIO                                 0.7.1
-rpi-ws281x                               5.0.0
-setuptools                               66.1.1
-sysv-ipc                                 1.1.0
-typing_extensions                        4.12.0
+Adafruit-Blinka==8.39.2
+adafruit-circuitpython-busdevice==5.2.9
+adafruit-circuitpython-connectionmanager==3.1.0
+adafruit-circuitpython-led-animation==2.9.0
+adafruit-circuitpython-neopixel==6.3.11
+adafruit-circuitpython-pixelbuf==2.0.4
+adafruit-circuitpython-requests==4.0.0
+adafruit-circuitpython-typing==1.10.3
+Adafruit-PlatformDetect==3.63.0
+Adafruit-PureIO==1.1.11
+pip==23.0.1
+pyftdi==0.55.4
+pyserial==3.5
+pyusb==1.2.1
+RPi.GPIO==0.7.1
+rpi-ws281x==5.0.0
+setuptools==66.1.1
+sysv-ipc==1.1.0
+typing_extensions==4.12.0
