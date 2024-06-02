@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from types import SimpleNamespace
 import keyboard
 from logger import defaultLogger as log
 import RPi.GPIO as GPIO
@@ -46,7 +47,7 @@ class GpioEventBus(EventBus):
                 for pin in self.pins:
                     new_read = GPIO.input(pin)
                     if new_read != last_read:
-                        event = {'pin': pin, 'value': new_read, type: 'explain'}
+                        event = SimpleNamespace(pin= pin, value=new_read, type='explain')
                         self.post(event)
                         last_read = new_read
             except Exception as e:
