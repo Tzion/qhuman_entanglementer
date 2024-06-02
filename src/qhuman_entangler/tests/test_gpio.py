@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import time
 from gpiozero import Button
 
 GPIO.setmode(GPIO.BCM)
@@ -23,6 +24,13 @@ def test_read_gpio_pins():
 
     except KeyboardInterrupt:
         GPIO.cleanup()
+
+
+def test_poll_gpio():
+    while True:
+        for pin in gpio_pins:
+            print(f"GPIO pin {pin} is {GPIO.input(pin)}")
+        time.sleep(0.1)
     
 
 def test_read_gpio_pins__gpiozero():
