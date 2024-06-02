@@ -14,7 +14,6 @@ def test_read_gpio_pins():
             print(f"adding event detection for pin {pin}")
             GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
         except RuntimeError:
-            print('faile')
             GPIO.remove_event_detect(pin)
             GPIO.add_event_detect(pin, GPIO.BOTH, callback=handle_gpio_change)
 
@@ -34,6 +33,7 @@ def test_read_gpio_pins__gpiozero():
         buttons = [Button(pin) for pin in gpio_pins]
 
         for button in buttons:
+            print(f"adding event detection for pin {button}")
             button.when_pressed = handle_gpio_change
 
         try:
