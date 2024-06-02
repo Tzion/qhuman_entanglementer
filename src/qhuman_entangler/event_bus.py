@@ -35,6 +35,7 @@ class GpioEventBus(EventBus):
     EXPLAIN_BUTTON_PIN = 9
 
     def __init__(self):
+        super().__init__()
         GPIO.setmode(GPIO.BCM)
         self.pins = [GpioEventBus.EXPLAIN_BUTTON_PIN, ]
         for pin in self.pins:
