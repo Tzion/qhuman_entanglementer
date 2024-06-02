@@ -35,13 +35,9 @@ def test_read_gpio_pins__gpiozero():
         for button in buttons:
             print(f"adding event detection for pin {button}")
             button.when_pressed = handle_gpio_change
-
-        try:
-            while True:
-                pass
-
-        except KeyboardInterrupt:
-            GPIO.cleanup()
+            button.when_released = handle_gpio_change
+        while True:
+            pass
 
 if __name__ == "__main__":
     test_read_gpio_pins__gpiozero()
