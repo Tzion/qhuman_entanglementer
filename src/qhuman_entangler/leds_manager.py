@@ -21,6 +21,7 @@ class LedsManager():
         pass
 
     def cleanup(self):
+        pass
 
 
     def idle(self):

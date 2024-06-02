@@ -1,5 +1,5 @@
 env-mac/
-__pycache__/
+**/__pycache__/**
 *DS_Store*
 src/qhuman_entangler/.DS_Store
 media/speech/test.mp3
