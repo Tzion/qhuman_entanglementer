@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+from gpiozero import Button
 
 GPIO.setmode(GPIO.BCM)
 gpio_pins = list(range(2, 27))  # Read all GPIO pins on Raspberry Pi
@@ -23,6 +24,24 @@ def test_read_gpio_pins():
 
     except KeyboardInterrupt:
         GPIO.cleanup()
+    
+
+def test_read_gpio_pins__gpiozero():
+
+        def handle_gpio_change(pin):
+            print(f"GPIO pin {pin} changed")
+
+        buttons = [Button(pin) for pin in gpio_pins]
+
+        for button in buttons:
+            button.when_pressed = handle_gpio_change
+
+        try:
+            while True:
+                pass
+
+        except KeyboardInterrupt:
+            GPIO.cleanup()
 
 if __name__ == "__main__":
-    test_read_gpio_pins()
+    test_read_gpio_pins__gpiozero()
