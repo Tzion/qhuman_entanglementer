@@ -42,9 +42,9 @@ class GpioEventBus(EventBus):
             GPIO.setup(pin, GPIO.OUT)
 
     def wait_for_events(self):
+        last_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
         while True:
             try:
-                last_read = None
                 for pin in self.pins:
                     new_read = GPIO.input(pin)
                     if new_read != last_read:
