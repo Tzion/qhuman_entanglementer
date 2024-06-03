@@ -37,20 +37,18 @@ class GpioEventBus(EventBus):
     def __init__(self):
         super().__init__()
         GPIO.setmode(GPIO.BCM)
-        self.pins = [GpioEventBus.EXPLAIN_BUTTON_PIN, ]
-        for pin in self.pins:
-            GPIO.setup(pin, GPIO.OUT)
+        GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT)
 
     def wait_for_events(self):
         last_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
         while True:
             try:
-                for pin in self.pins:
-                    new_read = GPIO.input(pin)
-                    if new_read != last_read:
-                        event = SimpleNamespace(pin= pin, value=new_read, type='explain')
-                        self.post(event)
-                        last_read = new_read
+                new_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
+                if new_read != last_read:
+                    event = SimpleNamespace(pin=GpioEventBus.EXPLAIN_BUTTON_PIN, value=new_read, type='explain',
+                                            pressed=True if new_read == 1 else False)
+                    self.post(event)
+                    last_read = new_read
             except Exception as e:
                 log.error('Error while waiting for gpio events: %s', e)
                     
