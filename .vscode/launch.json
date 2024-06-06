@@ -12,6 +12,14 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "sudo": true
+        },
+        {
+            "name": "Run Current File",
+            "program": "${file}",
+            "type": "debugpy",
+            "request": "launch",
+            "console": "integratedTerminal",
+            "justMyCode": true,
         }
     ]
 }

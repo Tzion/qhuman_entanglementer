@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import shepard_effect
 from types import SimpleNamespace
 import keyboard
 from logger import defaultLogger as log
