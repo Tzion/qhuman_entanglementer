@@ -13,7 +13,7 @@ class QuantumTunnel(Subscriber):
         self.leds_manager =  LedsManager()
     
     def start(self):
-        self.leds_manager.run_animation('idle')
+        self.leds_manager.enter_idle_mode()
 
 
     def handle_event(self, event):
