@@ -73,21 +73,45 @@ def theaterChaseRainbow(strip, wait_ms=50):
 
 
 class LedsManager():
-
     def __init__(self):
         self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         self.strip.begin()
         self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow]
+        self.stop_event = threading.Event()
+        self.animation_thread = None
+        self.active = False
+    
+    def activate(self):
+        self.active = True
+    
+    def deactivate(self):
+        self.active = False
 
     def run_animation(self, animation: callable, **kwargs):
         log.info("Running leds animation in the background: %s", animation.__name__)
-        t = threading.Thread(target=animation, args=(self.strip,), kwargs=kwargs)
-        t.start()
+        self.stop_event.set()  # Signal the current animation to stop
+        if self.animation_thread is not None:
+            self.animation_thread.join()  # Wait for the current animation to stop
+        self.stop_event.clear()  # Reset the stop event for the next animation
+        self.animation_thread = threading.Thread(target=self._run_animation, args=(animation,), kwargs=kwargs)
+        self.animation_thread.start()
 
-    def cleanup(self):
-        pass
+    def _run_animation(self, animation: callable, **kwargs):
+        try:
+            animation(self.strip, **kwargs)
+            while not self.stop_event.is_set() and self.active:
+                self._run_idle_animations()
+                time.sleep(0.1)
+        except Exception as e:
+            log.error("Error running leds animation: %s", e)
 
-    def run_idle_animations(self):
+    def stop_current_animation(self):
+        log.info('signaling the current animation to stop')
+        self.stop_event.set()
+        if self.animation_thread is not None:
+            self.animation_thread.join()
+
+    def _run_idle_animations(self):
         animation = random.choice(self.idle_animations)
-        self.run_animation(animation)
- 
+        self.run_animation(animation)        self.run_animation(animation)
+         self.run_animation(animation)  
