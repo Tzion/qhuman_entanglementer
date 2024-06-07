@@ -4,6 +4,8 @@ import random
 from random import randint
 import threading
 from logger import logging
+from flask import Flask
+from qhuman_entangler.leds_manager import LedsManager
 log = logging.getLogger(__name__)
 
 
@@ -132,6 +134,18 @@ class LedsManager():
         if self.running_animation is None:
             animation = random.choice(self.idle_animations)
             self.run_animation(animation)
+
+
+app = Flask(__name__)
+leds_manager = LedsManager()
+
+@app.route('/maintain')
+def maintain():
+    leds_manager.maintainance()
+    return 'Maintenance mode activated'
+
+if __name__ == '__main__':
+    app.run()
 
 
 # ChatGPT animations

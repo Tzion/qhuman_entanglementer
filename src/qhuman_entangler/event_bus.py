@@ -5,6 +5,8 @@ import keyboard
 from leds_manager import LedsManager
 from logger import defaultLogger as log
 import RPi.GPIO as GPIO
+import requests
+import time
 
 class Subscriber(ABC):
     @abstractmethod
@@ -53,11 +55,24 @@ class GpioEventBus(EventBus):
                                             pressed=True if new_read == 1 else False)
                     self.post(event)
                     last_read = new_read
-                self.leds_manager.maintainance()
+                leds_maintain()
+                # self.leds_manager.maintainance()
             except Exception as e:
                 log.error('Error while waiting for gpio events: %s', e)
                     
 
+last_execution_time = 0
+
+def leds_maintain():
+    global last_execution_time
+    current_time = time.time()
+    if current_time - last_execution_time >= 5:
+        try:
+            response = requests.get('http://localhost:5000/maintain')
+            log.info('Response from leds maintenance: %s', response.text)
+            last_execution_time = current_time
+        except Exception as e:
+            log.error('Error while calling leds maintenance: %s', e)
 
 class KeyboardEventBus(EventBus):
     def wait_for_events(self):
