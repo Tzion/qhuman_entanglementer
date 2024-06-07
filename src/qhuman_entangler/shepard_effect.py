@@ -32,15 +32,16 @@ def numpy_to_audio(data, sample_rate):
 def reverse_audio(audio):
     return audio.reverse()
 
-# Create Shepard tone
-tone = shepard_tone(base_freq, num_octaves, duration, sample_rate)
-audio = numpy_to_audio(tone, sample_rate)
+def main():
+    # Create Shepard tone
+    tone = shepard_tone(base_freq, num_octaves, duration, sample_rate)
+    audio = numpy_to_audio(tone, sample_rate)
 
-# Play Shepard tone
-play(audio)
+    # Play Shepard tone
+    play(audio)
 
-# Reverse Shepard tone
-reversed_audio = reverse_audio(audio)
+    # Reverse Shepard tone
+    reversed_audio = reverse_audio(audio)
 
-# Play reversed Shepard tone
-play(reversed_audio)
+    # Play reversed Shepard tone
+    play(reversed_audio)
