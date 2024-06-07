@@ -8,6 +8,7 @@ import threading
 
 class QuantumTunnel(Subscriber):
     def __init__(self):
+        log.info('Initializing QuantumTunnel')
         self.state = 'idle'
         self.audio_player = AudioPlayer()
         self.leds_manager =  LedsManager()

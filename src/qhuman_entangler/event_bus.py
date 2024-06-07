@@ -41,6 +41,7 @@ class GpioEventBus(EventBus):
         GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT)
 
     def wait_for_events(self):
+        log.info('Waiting for gpio events')
         last_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
         while True:
             try:
@@ -57,6 +58,7 @@ class GpioEventBus(EventBus):
 
 class KeyboardEventBus(EventBus):
     def wait_for_events(self):
+        log.info('Waiting for keyboard events')
         while True:
             try:
                 event = keyboard.read_event()
