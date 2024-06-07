@@ -1,11 +1,16 @@
-from bibliopixel.animation import StripChannelTest
-from bibliopixel.drivers.SPI.WS2801 import WS2801
+from BiblioPixelAnimations.simple.Fill import Fill
+from bibliopixel.drivers.PiWS281X import PiWS281X
 import BiblioPixelAnimations
 from bibliopixel import LEDStrip
 
-# driver = WS281X(num=286, pin=18)
-driver = WS2801(num=286)
-led = LEDStrip(driver)
-anim = StripChannelTest(led)
+# Use the PWM interface on GPIO 18
+driver = PiWS281X(num=286, gpio=18)
 
-anim.run()
+led = LEDStrip(driver)
+anim = Fill(led)
+
+try:
+    anim.run()
+except KeyboardInterrupt:
+    led.all_off()
+    led.update()
