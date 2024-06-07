@@ -1,6 +1,7 @@
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from leds_experiments import run_effects
 from config import SPEECH_PATH
 from audio_manager import AudioPlayer
 from time import sleep
