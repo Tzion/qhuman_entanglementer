@@ -30,6 +30,7 @@ def wheel(pos):
 def random_color():
     return Color(random.randint(0, 255), random.randint(0, 255), random.randint(0,255))
 
+
 def colorWipe(strip, stop_event, color=random_color(), wait_ms=50):
     """Wipe color across display a pixel at a time."""
     for i in range(strip.numPixels()):
@@ -97,6 +98,9 @@ class LedsManager():
         self.stop_event = threading.Event()
         self.animation_thread = None
         self.running_animation = None
+        
+        #chatGPT animations
+        self.idle_animations = [colorFade, spaceshipLaunch, meteorShower, fireworks, colorWipeRandom, particalAccelerator]
     
     def run_animation(self, animation: callable, **kwargs):
         log.debug("Running leds animation in the background: %s by thread: %s", animation.__name__, 
@@ -127,3 +131,92 @@ class LedsManager():
         if self.running_animation is None:
             animation = random.choice(self.idle_animations)
             self.run_animation(animation)
+
+
+# ChatGPT animations
+def colorFade(strip, stop_event, color_start=random_color(), color_end=random_color(), wait_ms=50, steps=100):
+    """Fade between two colors."""
+    r_start, g_start, b_start = color_start >> 16, (color_start >> 8) & 255, color_start & 255
+    r_end, g_end, b_end = color_end >> 16, (color_end >> 8) & 255, color_end & 255
+    r_step = (r_end - r_start) / steps
+    g_step = (g_end - g_start) / steps
+    b_step = (b_end - b_start) / steps
+    for i in range(steps):
+        r = int(r_start + (r_step * i))
+        g = int(g_start + (g_step * i))
+        b = int(b_start + (b_step * i))
+        color = Color(r, g, b)
+        for j in range(strip.numPixels()):
+            strip.setPixelColor(j, color)
+        strip.show()
+        if stop_event.is_set():
+            return
+        time.sleep(wait_ms/1000.0)
+
+def spaceshipLaunch(strip, stop_event, color=random_color(), wait_ms=50):
+    """Spaceship launch animation."""
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, color)
+        strip.show()
+        if stop_event.is_set():
+            return
+        time.sleep(wait_ms/1000.0)
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, 0)
+        strip.show()
+        if stop_event.is_set():
+            return
+        time.sleep(wait_ms/1000.0)
+
+def meteorShower(strip, stop_event, color=random_color(), wait_ms=50, iterations=10):
+    """Meteor shower animation."""
+    for j in range(iterations):
+        for i in range(0, strip.numPixels(), 3):
+            strip.setPixelColor(i, color)
+            strip.show()
+            if stop_event.is_set():
+                return
+            time.sleep(wait_ms/1000.0)
+            strip.setPixelColor(i, 0)
+            strip.show()
+            if stop_event.is_set():
+                return
+
+def fireworks(strip, stop_event, wait_ms=50, iterations=10):
+    """Fireworks animation."""
+    for j in range(iterations):
+        for i in range(strip.numPixels()):
+            strip.setPixelColor(i, random_color())
+            strip.show()
+            if stop_event.is_set():
+                return
+            time.sleep(wait_ms/1000.0)
+        for i in range(strip.numPixels()):
+            strip.setPixelColor(i, 0)
+        strip.show()
+        if stop_event.is_set():
+            return
+
+def colorWipeRandom(strip, stop_event, wait_ms=50):
+    """Wipe random color across display a pixel at a time."""
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, random_color())
+        strip.show()
+        if stop_event.is_set():
+            return
+        time.sleep(wait_ms/1000.0)
+
+def particalAccelerator(strip, stop_event, color=random_color(), wait_ms=50):
+    """Particle accelerator animation."""
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, color)
+        strip.show()
+        if stop_event.is_set():
+            return
+        time.sleep(wait_ms/1000.0)
+    for i in range(strip.numPixels()):
+        strip.setPixelColor(i, 0)
+        strip.show()
+        if stop_event.is_set():
+            return
+        time.sleep(wait_ms/1000.0)
