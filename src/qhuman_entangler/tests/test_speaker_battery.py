@@ -11,7 +11,7 @@ def play_audio_once_in_while():
         audio_player = AudioPlayer()
         print('playing sound')
         audio_player.play_sound('../media/speech/explain_short_hebrew.mp3')
-        sleep_time_minutes = random.randint(10, 30)
+        sleep_time_minutes = random.randint(1, 3)
         sleep_time_seconds = sleep_time_minutes * 60
         print(f'sleeping for {sleep_time_minutes} minutes')
         sleep(sleep_time_seconds)
