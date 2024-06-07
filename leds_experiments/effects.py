@@ -78,7 +78,8 @@ def theaterChaseRainbow(strip, wait_ms=50):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
 
-def run_effects():
+# Main program logic follows:
+if __name__ == '__main__':
     # Process arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
@@ -112,8 +113,3 @@ def run_effects():
     except KeyboardInterrupt:
         if args.clear:
             colorWipe(strip, Color(0,0,0), 10)
-
-
-# Main program logic follows:
-if __name__ == '__main__':
-    run_effects()
