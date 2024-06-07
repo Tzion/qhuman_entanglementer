@@ -1,7 +1,8 @@
 from rpi_ws281x import *
 import random
 import threading
-from logger import defaultLogger as log
+from logger import logging
+log = logging.getLogger(__name__)
 
 
 # LED strip configuration:
@@ -118,11 +119,12 @@ class LedsManager():
             self.animation_thread.join()
 
     def enter_idle_mode(self):
-        log.debug("Activating leds manager")
+        log.debug("Entering idle mode")
         self.idle_mode = True
+        self._run_idle_animations()
     
     def exit_idle_mode(self):
-        log.debug("Deactivating leds manager")
+        log.debug("Exiting idle mode")
         self.idle_mode = False
 
     def _run_idle_animations(self):
