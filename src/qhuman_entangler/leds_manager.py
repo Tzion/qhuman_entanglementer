@@ -1,4 +1,3 @@
-import time
 from rpi_ws281x import *
 import random
 import threading
@@ -98,7 +97,7 @@ class LedsManager():
     def run_animation(self, animation: callable, **kwargs):
         log.info("Running leds animation in the background: %s", animation.__name__)
         self.stop_event.set()  # Signal the current animation to stop
-        if self.animation_thread is not None:
+        if self.animation_thread is not None and self.animation_thread.ident != threading.get_ident():
             self.animation_thread.join()  # Wait for the current animation to stop
         self.stop_event.clear()  # Reset the stop event for the next animation
         self.animation_thread = threading.Thread(target=self._run_animation, args=(animation,), kwargs=kwargs)
