@@ -43,7 +43,7 @@ def main():
     quantum_tunnel = QuantumTunnel()
     quantum_tunnel.start()
     # event_bus = KeyboardEventBus()
-    event_bus = GpioEventBus()
+    event_bus = GpioEventBus(quantum_tunnel.leds_manager)
     event_bus.subscribe(quantum_tunnel)
     event_bus.wait_for_events()
 
