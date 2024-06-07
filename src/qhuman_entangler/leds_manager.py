@@ -1,6 +1,7 @@
 import time
 from rpi_ws281x import *
 import random
+from random import randint
 import threading
 from logger import logging
 log = logging.getLogger(__name__)
@@ -168,7 +169,7 @@ def spaceshipLaunch(strip, stop_event, color=random_color(), wait_ms=50):
             return
         time.sleep(wait_ms/1000.0)
 
-def meteorShower(strip, stop_event, color=random_color(), wait_ms=50, iterations=10):
+def meteorShower(strip, stop_event, color=random_color(), wait_ms=18, iterations=randint(2,13)):
     """Meteor shower animation."""
     for j in range(iterations):
         for i in range(0, strip.numPixels(), 3):
@@ -182,7 +183,7 @@ def meteorShower(strip, stop_event, color=random_color(), wait_ms=50, iterations
             if stop_event.is_set():
                 return
 
-def fireworks(strip, stop_event, wait_ms=50, iterations=10):
+def fireworks(strip, stop_event, wait_ms=randint(8,78), iterations=randint(2,8)):
     """Fireworks animation."""
     for j in range(iterations):
         for i in range(strip.numPixels()):
@@ -197,7 +198,7 @@ def fireworks(strip, stop_event, wait_ms=50, iterations=10):
         if stop_event.is_set():
             return
 
-def colorWipeRandom(strip, stop_event, wait_ms=50):
+def colorWipeRandom(strip, stop_event, wait_ms=10):
     """Wipe random color across display a pixel at a time."""
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, random_color())
@@ -211,12 +212,15 @@ def particalAccelerator(strip, stop_event, color=random_color(), wait_ms=50):
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
         strip.show()
+        wait_accelerate = wait_ms/i + wait_ms / 2
         if stop_event.is_set():
             return
-        time.sleep(wait_ms/1000.0)
+        time.sleep(wait_accelerate/1000.0)
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, 0)
         strip.show()
+        wait_accelerate = wait_ms/i + wait_ms / 2
         if stop_event.is_set():
             return
         time.sleep(wait_ms/1000.0)
+
