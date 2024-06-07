@@ -14,6 +14,17 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 # Define functions which animate LEDs in various ways.
+def wheel(pos):
+    """Generate rainbow colors across 0-255 positions."""
+    if pos < 85:
+        return Color(pos * 3, 255 - pos * 3, 0)
+    elif pos < 170:
+        pos -= 85
+        return Color(255 - pos * 3, 0, pos * 3)
+    else:
+        pos -= 170
+        return Color(0, pos * 3, 255 - pos * 3)
+
 def colorWipe(strip, color, wait_ms=50):
     """Wipe color across display a pixel at a time."""
     for i in range(strip.numPixels()):
@@ -33,16 +44,6 @@ def theaterChase(strip, color, wait_ms=50, iterations=10):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
 
-def wheel(pos):
-    """Generate rainbow colors across 0-255 positions."""
-    if pos < 85:
-        return Color(pos * 3, 255 - pos * 3, 0)
-    elif pos < 170:
-        pos -= 85
-        return Color(255 - pos * 3, 0, pos * 3)
-    else:
-        pos -= 170
-        return Color(0, pos * 3, 255 - pos * 3)
 
 def rainbow(strip, wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
@@ -79,14 +80,8 @@ class LedsManager():
         self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow]
         self.stop_event = threading.Event()
         self.animation_thread = None
-        self.active = False
+        self.idle_mode = False
     
-    def activate(self):
-        self.active = True
-    
-    def deactivate(self):
-        self.active = False
-
     def run_animation(self, animation: callable, **kwargs):
         log.info("Running leds animation in the background: %s", animation.__name__)
         self.stop_event.set()  # Signal the current animation to stop
@@ -99,7 +94,7 @@ class LedsManager():
     def _run_animation(self, animation: callable, **kwargs):
         try:
             animation(self.strip, **kwargs)
-            while not self.stop_event.is_set() and self.active:
+            while not self.stop_event.is_set() and self.idle_mode:
                 self._run_idle_animations()
                 time.sleep(0.1)
         except Exception as e:
@@ -111,7 +106,14 @@ class LedsManager():
         if self.animation_thread is not None:
             self.animation_thread.join()
 
+    def enter_idle_mode(self):
+        log.debug("Activating leds manager")
+        self.idle_mode = True
+    
+    def exit_idle_mode(self):
+        log.debug("Deactivating leds manager")
+        self.idle_mode = False
+
     def _run_idle_animations(self):
         animation = random.choice(self.idle_animations)
-        self.run_animation(animation)        self.run_animation(animation)
-         self.run_animation(animation)  
+        self.run_animation(animation)
