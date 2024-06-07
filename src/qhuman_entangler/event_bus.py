@@ -41,6 +41,7 @@ class GpioEventBus(EventBus):
         GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT)
 
     def wait_for_events(self):
+        last_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
         while True:
             try:
                 new_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)

@@ -4,3 +4,5 @@ env-mac/
 src/qhuman_entangler/.DS_Store
 media/speech/test.mp3
 venv_pi/
+.vscode/arduino.json
+src/qhuman_entangler/__pycache__/**
