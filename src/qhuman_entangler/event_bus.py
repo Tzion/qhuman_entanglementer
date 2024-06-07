@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import shepard_effect
 from types import SimpleNamespace
 import keyboard
+from leds_manager import LedsManager
 from logger import defaultLogger as log
 import RPi.GPIO as GPIO
 
@@ -35,10 +36,11 @@ class GpioEventBus(EventBus):
     
     EXPLAIN_BUTTON_PIN = 9
 
-    def __init__(self):
+    def __init__(self, leds_manager: LedsManager): # dirty but late
         super().__init__()
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT)
+        self.leds_manager = leds_manager
 
     def wait_for_events(self):
         log.info('Waiting for gpio events')
@@ -51,6 +53,7 @@ class GpioEventBus(EventBus):
                                             pressed=True if new_read == 1 else False)
                     self.post(event)
                     last_read = new_read
+                self.leds_manager.maintainance()
             except Exception as e:
                 log.error('Error while waiting for gpio events: %s', e)
                     
