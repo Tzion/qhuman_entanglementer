@@ -26,7 +26,10 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
-def colorWipe(strip, stop_event, color=Color(0, 25, 241), wait_ms=50):
+def random_color():
+    return Color(random.randint(0, 255), random.randint(0, 255), random.randint(0,255))
+
+def colorWipe(strip, stop_event, color=random_color(), wait_ms=50):
     """Wipe color across display a pixel at a time."""
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
@@ -36,7 +39,7 @@ def colorWipe(strip, stop_event, color=Color(0, 25, 241), wait_ms=50):
         time.sleep(wait_ms/1000.0)
 
 
-def theaterChase(strip, stop_event, color=Color(0, 255, 0), wait_ms=50, iterations=10):
+def theaterChase(strip, stop_event, color=random_color(), wait_ms=50, iterations=10):
     """Movie theater light style chaser animation."""
     for j in range(iterations):
         for q in range(3):
