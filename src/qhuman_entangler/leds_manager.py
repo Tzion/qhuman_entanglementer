@@ -124,7 +124,6 @@ class LedsManager():
             self.animation_thread.join()
 
     def maintainance(self):
-        log.debug('Maintaining leds manager')
         if self.running_animation is None:
             animation = random.choice(self.idle_animations)
             self.run_animation(animation)
