@@ -22,6 +22,7 @@ class AudioPlayerInterface:
 
 class AudioPlayer(AudioPlayerInterface):
     def __init__(self):
+        log.info('Initializing audio player')
         pygame.init()
         self.mixer = pygame.mixer
         self.mixer.init()

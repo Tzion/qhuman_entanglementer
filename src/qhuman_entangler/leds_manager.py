@@ -85,6 +85,7 @@ def theaterChaseRainbow(strip, stop_event, wait_ms=50):
 
 class LedsManager():
     def __init__(self):
+        log.info('Initializing leds manager')
         self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         self.strip.begin()
         self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow]
