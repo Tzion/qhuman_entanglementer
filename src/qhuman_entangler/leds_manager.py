@@ -1,5 +1,7 @@
 from rpi_ws281x import *
 import random
+import threading
+from logger import defaultLogger as log
 
 
 # LED strip configuration:
@@ -78,7 +80,9 @@ class LedsManager():
         self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow]
 
     def run_animation(self, animation: callable, **kwargs):
-        animation(self.strip, **kwargs)
+        log.info("Running leds animation in the background: %s", animation.__name__)
+        t = threading.Thread(target=animation, args=(self.strip,), kwargs=kwargs)
+        t.start()
 
     def cleanup(self):
         pass
