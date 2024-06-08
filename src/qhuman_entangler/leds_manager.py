@@ -289,7 +289,7 @@ def maintain():
 
 @app.route('/shzira')
 def shzira():
-    leds_manager.run_animation(meteorShower)
+    leds_manager.run_animation(shziraAnimation)
     return 'SHZIRA activated'
 
 if __name__ == '__main__':
