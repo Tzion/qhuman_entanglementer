@@ -36,7 +36,7 @@ class EventBus(ABC):
 class GpioEventBus(EventBus):
     
     EXPLAIN_BUTTON_PIN = 9
-    CONTACT_SENSOR_PIN = 26
+    CONTACT_SENSOR_PIN = 13
 
     def __init__(self):
         super().__init__()

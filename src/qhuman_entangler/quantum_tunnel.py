@@ -26,6 +26,7 @@ class QuantumTunnel(Subscriber):
     def handle_contact_event(self, event):
         if event.value == GPIO.HIGH:
             try:
+                log.info('Starting entanglement!')
                 self.audio_player.play_sound("media/sound/entanglement_1.mp3")
                 response = requests.get('http://localhost:5000/shzira')
                 log.debug('Response from shzira: %s', response)
