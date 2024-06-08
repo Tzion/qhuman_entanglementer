@@ -193,23 +193,23 @@ def particalAccelerator(strip, rings, stop_event, color=random_color(), wait_ms=
 
 def shziraAnimation(strip,  rings, stop_event):
     """Shzira animation."""
-    # index = 0
-    # waveColor = random_color()
-    # while not stop_event.is_set():
-    #     rings[index].setAllRingColor(waveColor)
-    #     rings[-1-index].setAllRingColor(waveColor)
-    #     writeRingsToStrip(strip, rings)
-    #     if(index>=4):
-    #         index = 0
-    #         waveColor = random_color()
-    #     else: 
-    #         index += 1
-    #     time.sleep(0.05)
+    index = 0
+    waveColor = random_color()
     while not stop_event.is_set():
-        for i in range(len(rings)):
-            rings[i].setAllRingColor(random_color())
+        rings[index].setAllRingColor(waveColor)
+        rings[-1-index].setAllRingColor(waveColor)
         writeRingsToStrip(strip, rings)
-        time.sleep(2)
+        if(index>=4):
+            index = 0
+            waveColor = random_color()
+        else: 
+            index += 1
+        time.sleep(0.05)
+    # while not stop_event.is_set():
+    #     for i in range(len(rings)):
+    #         rings[i].setAllRingColor(random_color())
+    #     writeRingsToStrip(strip, rings)
+    #     time.sleep(2)
 
 
 # helper for converting rings to strip and SHOW
