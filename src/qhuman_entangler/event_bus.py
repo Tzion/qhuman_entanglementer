@@ -64,7 +64,7 @@ class GpioEventBus(EventBus):
                 self.last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, self.last_read_explain, 'explain')
                 self.last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, self.last_read_contact, 'contact')
                 # GpioEventBus.turn_button_on(GpioEventBus.EXPLAIN_BUTTON_PIN)
-                # leds_maintain() # super dirty but it's late
+                leds_maintain() # super dirty but it's late
                 time.sleep(.1)  # add a small delay to reduce CPU usage
 
             except Exception as e:
@@ -85,7 +85,7 @@ last_execution_time = 0
 def leds_maintain():
     global last_execution_time
     current_time = time.time()
-    if current_time - last_execution_time >= 5:
+    if current_time - last_execution_time >= 30:
         try:
             response = requests.get('http://localhost:5000/maintain')
             log.info('Response from leds maintenance: %s', response.text)

@@ -27,16 +27,16 @@ class QuantumTunnel(Subscriber):
         if event.value == GPIO.HIGH:
             try:
                 log.info('Starting entanglement!')
-                self.audio_player.play_sound("media/sound/entanglement_1.mp3")
-                response = requests.get('http://localhost:5000/shzira')
-                log.debug('Response from shzira: %s', response)
+                self.audio_player.play_entanglement_with_leds()
             except Exception as e:
-                log.error('Error while calling leds maintenance: %s', e)
+                log.error('Error while playing entanglement: %s', e)
 
     def handle_explain_event(self, event):
         if event.value == GPIO.LOW:
-            self.audio_player.play_sound("media/speech/explain_short_hebrew.mp3")
-
+            try:
+                self.audio_player.play_explain()
+            except Exception as e:
+                log.error('Error while playing explain: %s', e)
 
 
 def main():

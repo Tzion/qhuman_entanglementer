@@ -4,7 +4,7 @@ import random
 from random import randint
 import threading
 from logger import logging
-from flask import Flask
+from flask import Flask, request
 log = logging.getLogger(__name__)
 
 
@@ -191,11 +191,13 @@ def particalAccelerator(strip, rings, stop_event, color=random_color(), wait_ms=
             return
         time.sleep(wait_ms/1000.0)
 
-def shziraAnimation(strip,  rings, stop_event):
+def shziraAnimation(strip,  rings, duration_ms):
     """Shzira animation."""
     index = 0
     waveColor = random_color()
-    while not stop_event.is_set():
+    start_time = time.time()
+    time_left = duration_ms / 1000
+    while time_left > 0:
         rings[index].setAllRingColor(waveColor)
         rings[-1-index].setAllRingColor(waveColor)
         writeRingsToStrip(strip, rings)
@@ -206,6 +208,7 @@ def shziraAnimation(strip,  rings, stop_event):
             time.sleep(0.2)
         else: 
             index += 1
+        time_left = time_left - (time.time() - start_time)
         time.sleep(0.07)
     # while not stop_event.is_set():
     #     for i in range(len(rings)):
@@ -297,9 +300,9 @@ def maintain():
 
 @app.route('/shzira')
 def shzira():
-    leds_manager.run_animation(shziraAnimation)
+    duration_ms = int(request.args.get('duration_ms', 0))
+    leds_manager.run_animation(shziraAnimation, duration_ms=duration_ms)
     return 'SHZIRA activated'
 
 if __name__ == '__main__':
     app.run()
-
