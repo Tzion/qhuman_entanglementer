@@ -179,14 +179,14 @@ def particalAccelerator(strip, rings, stop_event, color=random_color(), wait_ms=
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
         strip.show()
-        wait_accelerate = wait_ms/i + wait_ms / 2
+        wait_accelerate = wait_ms/(i+1) + wait_ms / 2
         if stop_event.is_set():
             return
         time.sleep(wait_accelerate/1000.0)
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, 0)
         strip.show()
-        wait_accelerate = wait_ms/i + wait_ms / 2
+        wait_accelerate = wait_ms/(i+1) + wait_ms / 2
         if stop_event.is_set():
             return
         time.sleep(wait_ms/1000.0)
@@ -298,7 +298,7 @@ def idle():
 
 @app.route('/entanglement')
 def run_entanglement():
-    duration_ms = int(request.args.get('duration_ms', 0))
+    duration_ms = int(float(request.args.get('duration_ms', 0)))
     leds_manager.run_animation(entanglement, duration_ms=duration_ms)
     return 'QUANTHUMANAZING!'
 

@@ -34,6 +34,7 @@ class AudioPlayer(AudioPlayerInterface):
         self.mixer.init()
 
     def play_entanglement_with_leds(self):
+        self.stop() # stop any playing sound
         track = pick_track("media/sound/")
         duration_ms = pygame.mixer.Sound(track).get_length() * 1000  # may be waste to create Sound now and in play_sound()
         response = requests.get(f'http://localhost:5000/entanglement?duration_ms={duration_ms}', timeout=4)

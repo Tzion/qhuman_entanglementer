@@ -82,7 +82,7 @@ class GpioEventBus(EventBus):
 # TODO redesign
 last_execution_time = 0
 
-def leds_maintain():
+def leds_idle():
     global last_execution_time
     current_time = time.time()
     if current_time - last_execution_time >= 30:
@@ -91,7 +91,7 @@ def leds_maintain():
             log.info('Response from leds maintenance: %s', response.text)
             last_execution_time = current_time
         except Exception as e:
-            log.error('Error while calling leds maintenance: %s', e)
+            log.error('Error while calling leds idle: %s', e)
 
 class KeyboardEventBus(EventBus):
     def wait_for_events(self):
