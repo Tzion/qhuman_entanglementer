@@ -5,7 +5,7 @@ const int numSamples = 46;
 const int initialVoltageEstimation = 533; // guessig the initial voltage (~2.4V)
 int voltageSamples[numSamples];  // using it as cyclic array, initialized with 0
 int sampleIndex = 0;
-const int outputPin = 9;
+const int outputPin = 13;
 bool pauseSampling = false;
 
 void setup()
@@ -13,6 +13,10 @@ void setup()
   Serial.begin(9600);
   digitalWrite(outputPin, LOW);
   // initialize the samlpes with the estimated voltage to help reaching steady state faster
+  // initializeSamples(initialVoltageEstimation);
+}
+
+void initializeSamples(int voltage) {
   for (int i=0; i<numSamples; i++) {
     voltageSamples[i] = initialVoltageEstimation;
   }
@@ -23,6 +27,12 @@ void loop()
   voltageSensorValue = analogRead(voltageSensorPin);
   Serial.print("Voltage measured of pin A7:");
   Serial.println(voltageSensorValue);
+  if (voltageSensorValue == 0) {
+    Serial.println("Voltage is 0 - wires may be disconnected - skipping measurement");
+    digitalWrite(outputPin, LOW);
+    delay(500);
+    return;
+  }
 
 // when there's contact (low voltage) we want to keep the average value as a reference point
 if (!pauseSampling) {
