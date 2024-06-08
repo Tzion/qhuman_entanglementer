@@ -27,11 +27,8 @@ class QuantumTunnel(Subscriber):
         pass
 
     def handle_explain_event(self, event):
-        def activate_explain_button():
-            GPIO.output(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.HIGH)
-        if event.value:
+        if event.value == GPIO.LOW:
             self.audio_player.play_sound("media/speech/explain_short_hebrew.mp3")
-            #threading.Timer(3.0, activate_explain_button).start()
 
 
 

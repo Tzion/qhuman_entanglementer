@@ -47,12 +47,14 @@ class GpioEventBus(EventBus):
         self.last_read_contact = GPIO.input(GpioEventBus.CONTACT_SENSOR_PIN)
     
     @staticmethod
+    # it doesn't work well - when setting the button as input it starting on low - turned off
     def turn_button_on(pin):
         button_is_off = GPIO.input(pin) == GPIO.LOW
         if button_is_off:
-            log.debug('Turning button on')
+            log.debug(f'Turning button at pin={pin} on')
             GPIO.setup(pin, GPIO.OUT)
             GPIO.output(pin, GPIO.HIGH)
+            time.sleep(.5)
             GPIO.setup(pin, GPIO.IN)
 
     def wait_for_events(self):
@@ -61,9 +63,7 @@ class GpioEventBus(EventBus):
             try:
                 self.last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, self.last_read_explain, 'explain')
                 self.last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, self.last_read_contact, 'contact')
-                if (self.last_read_explain == GPIO.LOW):
-                    time.sleep(3)
-                    GpioEventBus.turn_button_on(GpioEventBus.EXPLAIN_BUTTON_PIN)
+                # GpioEventBus.turn_button_on(GpioEventBus.EXPLAIN_BUTTON_PIN)
                 # leds_maintain() # super dirty but it's late
                 time.sleep(1.5)  # add a small delay to reduce CPU usage
             except Exception as e:
