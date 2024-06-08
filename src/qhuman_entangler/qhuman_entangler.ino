@@ -49,7 +49,7 @@ if (!pauseSampling) {
   Serial.print("Average voltage: ");
   Serial.println(samplesAverage);
 
-  if (voltageSensorValue < samplesAverage * .83) {
+  if (voltageSensorValue < samplesAverage * .88) {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
     pauseSampling = true;

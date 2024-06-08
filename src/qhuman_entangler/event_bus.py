@@ -66,6 +66,7 @@ class GpioEventBus(EventBus):
                 # GpioEventBus.turn_button_on(GpioEventBus.EXPLAIN_BUTTON_PIN)
                 # leds_maintain() # super dirty but it's late
                 time.sleep(1.5)  # add a small delay to reduce CPU usage
+
             except Exception as e:
                     log.error('Error while waiting for gpio events: %s', e)
                     

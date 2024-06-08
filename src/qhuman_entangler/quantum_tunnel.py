@@ -24,7 +24,8 @@ class QuantumTunnel(Subscriber):
 
     def handle_contact_event(self, event):
         # Add your code here to handle the 'contact' event
-        pass
+        if event.value == GPIO.HIGH:
+            self.audio_player.play_sound("media/sound/entanglement_1.mp3")
 
     def handle_explain_event(self, event):
         if event.value == GPIO.LOW:
