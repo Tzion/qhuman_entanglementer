@@ -64,7 +64,7 @@ class GpioEventBus(EventBus):
                 self.last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, self.last_read_explain, 'explain')
                 self.last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, self.last_read_contact, 'contact')
                 # GpioEventBus.turn_button_on(GpioEventBus.EXPLAIN_BUTTON_PIN)
-                leds_maintain() # super dirty but it's late
+                leds_idle() # super dirty but it's late
                 time.sleep(.1)  # add a small delay to reduce CPU usage
 
             except Exception as e:
