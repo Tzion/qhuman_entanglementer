@@ -51,8 +51,8 @@ class GpioEventBus(EventBus):
         while True:
             try:
                 self.last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, self.last_read_explain, 'explain')
-                self.last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, self.last_read_contact, 'contact')
-                leds_maintain() # super dirty but it's late
+                # self.last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, self.last_read_contact, 'contact')
+                # leds_maintain() # super dirty but it's late
                 time.sleep(1.5)  # add a small delay to reduce CPU usage
             except Exception as e:
                     log.error('Error while waiting for gpio events: %s', e)
@@ -63,7 +63,7 @@ class GpioEventBus(EventBus):
         if new_read != last_read:
             event = SimpleNamespace(pin=pin, value=new_read, type=event_type)
             log.debug('Notifying subscribers about gpio event: %s', event)
-            self.post(event)
+            # self.post(event)
             return new_read
 
 
