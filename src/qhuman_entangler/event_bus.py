@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-import shepard_effect
 from types import SimpleNamespace
 import keyboard
-from logger import defaultLogger as log
 import RPi.GPIO as GPIO
 import requests
 import time
+from logger import logging
+log = logging.getLogger(__name__)
 
 class Subscriber(ABC):
     @abstractmethod
@@ -36,27 +36,36 @@ class EventBus(ABC):
 class GpioEventBus(EventBus):
     
     EXPLAIN_BUTTON_PIN = 9
+    CONTACT_SENSOR_PIN = 26
 
     def __init__(self):
         super().__init__()
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT)
+        GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(GpioEventBus.CONTACT_SENSOR_PIN, GPIO.IN, initial=GPIO.LOW)
 
     def wait_for_events(self):
-        log.info('Waiting for gpio events')
-        last_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
+        global last_read_explain, last_read_contact
+        log.info('Polling gpio events')
+        last_read_explain = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
+        last_read_contact = GPIO.input(GpioEventBus.CONTACT_SENSOR_PIN)
         while True:
             try:
-                new_read = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
-                if new_read != last_read:
-                    event = SimpleNamespace(pin=GpioEventBus.EXPLAIN_BUTTON_PIN, value=new_read, type='explain',
-                                            pressed=True if new_read == 1 else False)
-                    self.post(event)
-                    last_read = new_read
-                leds_maintain()
+                last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, last_read_explain, 'explain')
+                last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, last_read_contact, 'contact')
+                leds_maintain() # super dirty but it's late
+                time.sleep(0.01)  # add a small delay to reduce CPU usage
             except Exception as e:
-                log.error('Error while waiting for gpio events: %s', e)
+                    log.error('Error while waiting for gpio events: %s', e)
                     
+    def post_event_if_pin_change(self, pin, last_read, event_type):
+        new_read = GPIO.input(pin)
+        if new_read != last_read:
+            event = SimpleNamespace(pin=pin, value=new_read, type=event_type)
+            log.debug('Notifying subscribers about gpio event: %s', event)
+            self.post(event)
+            return new_read
+
 
 last_execution_time = 0
 
