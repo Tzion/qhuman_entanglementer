@@ -41,8 +41,8 @@ class GpioEventBus(EventBus):
     def __init__(self):
         super().__init__()
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT, initial=GPIO.HIGH)
-        GPIO.setup(GpioEventBus.CONTACT_SENSOR_PIN, GPIO.IN, initial=GPIO.LOW)
+        GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.IN)
+        GPIO.setup(GpioEventBus.CONTACT_SENSOR_PIN, GPIO.IN)
         self.last_read_explain = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
         self.last_read_contact = GPIO.input(GpioEventBus.CONTACT_SENSOR_PIN)
 
@@ -53,12 +53,13 @@ class GpioEventBus(EventBus):
                 self.last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, self.last_read_explain, 'explain')
                 self.last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, self.last_read_contact, 'contact')
                 leds_maintain() # super dirty but it's late
-                time.sleep(0.01)  # add a small delay to reduce CPU usage
+                time.sleep(1.5)  # add a small delay to reduce CPU usage
             except Exception as e:
                     log.error('Error while waiting for gpio events: %s', e)
                     
     def post_event_if_pin_change(self, pin, last_read, event_type):
         new_read = GPIO.input(pin)
+        # import pdb;pdb.set_trace()
         if new_read != last_read:
             event = SimpleNamespace(pin=pin, value=new_read, type=event_type)
             log.debug('Notifying subscribers about gpio event: %s', event)
