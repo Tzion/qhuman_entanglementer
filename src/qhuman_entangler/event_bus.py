@@ -43,16 +43,15 @@ class GpioEventBus(EventBus):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(GpioEventBus.EXPLAIN_BUTTON_PIN, GPIO.OUT, initial=GPIO.HIGH)
         GPIO.setup(GpioEventBus.CONTACT_SENSOR_PIN, GPIO.IN, initial=GPIO.LOW)
+        self.last_read_explain = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
+        self.last_read_contact = GPIO.input(GpioEventBus.CONTACT_SENSOR_PIN)
 
     def wait_for_events(self):
-        global last_read_explain, last_read_contact
         log.info('Polling gpio events')
-        last_read_explain = GPIO.input(GpioEventBus.EXPLAIN_BUTTON_PIN)
-        last_read_contact = GPIO.input(GpioEventBus.CONTACT_SENSOR_PIN)
         while True:
             try:
-                last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, last_read_explain, 'explain')
-                last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, last_read_contact, 'contact')
+                self.last_read_explain = self.post_event_if_pin_change(GpioEventBus.EXPLAIN_BUTTON_PIN, self.last_read_explain, 'explain')
+                self.last_read_contact = self.post_event_if_pin_change(GpioEventBus.CONTACT_SENSOR_PIN, self.last_read_contact, 'contact')
                 leds_maintain() # super dirty but it's late
                 time.sleep(0.01)  # add a small delay to reduce CPU usage
             except Exception as e:
@@ -67,6 +66,7 @@ class GpioEventBus(EventBus):
             return new_read
 
 
+# TODO redesign
 last_execution_time = 0
 
 def leds_maintain():
