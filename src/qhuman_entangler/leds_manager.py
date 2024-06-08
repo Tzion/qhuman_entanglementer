@@ -199,12 +199,14 @@ def shziraAnimation(strip,  rings, stop_event):
         rings[index].setAllRingColor(waveColor)
         rings[-1-index].setAllRingColor(waveColor)
         writeRingsToStrip(strip, rings)
-        if(index>=4):
+        
+        if(index>=4): #start from the beginning with a new color
             index = 0
             waveColor = random_color()
+            time.sleep(0.2)
         else: 
             index += 1
-        time.sleep(0.05)
+        time.sleep(0.07)
     # while not stop_event.is_set():
     #     for i in range(len(rings)):
     #         rings[i].setAllRingColor(random_color())
