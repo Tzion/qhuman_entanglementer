@@ -196,7 +196,7 @@ def entanglement(strip,  rings, duration_ms, stop_event):
     index = 0
     waveColor = random_color()
     start_time = time.time()
-    time_left = duration_ms
+    time_left = duration_ms / 1000
     while time_left > 0:
         rings[index].setAllRingColor(waveColor)
         rings[-1-index].setAllRingColor(waveColor)
@@ -208,7 +208,7 @@ def entanglement(strip,  rings, duration_ms, stop_event):
             time.sleep(0.2)
         else: 
             index += 1
-        time_left = time_left - (time.time() - start_time)
+        time_left = (duration_ms / 1000) - (time.time() - start_time)
         time.sleep(0.07)
     # while not stop_event.is_set():
     #     for i in range(len(rings)):
