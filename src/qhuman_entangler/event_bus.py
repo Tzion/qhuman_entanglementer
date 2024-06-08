@@ -50,8 +50,9 @@ class GpioEventBus(EventBus):
     def turn_button_on(pin):
         button_is_off = GPIO.input(pin) == GPIO.LOW
         if button_is_off:
+            log.debug('Turning button on')
             GPIO.setup(pin, GPIO.OUT)
-            GPIO.output(GPIO.HIGH)
+            GPIO.output(pin, GPIO.HIGH)
             GPIO.setup(pin, GPIO.IN)
 
     def wait_for_events(self):
