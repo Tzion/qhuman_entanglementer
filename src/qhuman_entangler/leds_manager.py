@@ -293,7 +293,7 @@ leds_manager = LedsManager()
 @app.route('/idle')
 def idle():
     leds_manager.idle()
-    return 'Maintenance mode activated'
+    return 'Idle mode activated'
 
 
 @app.route('/entanglement')
