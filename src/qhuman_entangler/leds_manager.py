@@ -17,6 +17,16 @@ LED_BRIGHTNESS = 65     # Set to 0 for darkest and 255 for brightest
 LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
+
+class Ring:
+    def __init__(self, num_pixels):
+        self.num_pixels = num_pixels
+        self.pixels = [Color(0,0,0)] * num_pixels
+        
+    def setAllRingColor(self, color):
+        for i in range(self.num_pixels):
+            self.pixels[i] = color
+
 # Define functions which animate LEDs in various ways.
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
@@ -181,6 +191,37 @@ def particalAccelerator(strip, stop_event, color=random_color(), wait_ms=50):
             return
         time.sleep(wait_ms/1000.0)
 
+def shziraAnimation(strip, stop_event, rings):
+    """Shzira animation."""
+    index = 0
+    waveColor = random_color()
+    while not stop_event.is_set():
+        rings[0].setAllRingColor(waveColor)
+        rings[-1-index].setAllRingColor(waveColor)
+        writeRingsToStrip(strip, rings)
+        if(index>=4):
+            index = 0
+            waveColor = random_color()
+        else: 
+            index += 1
+        time.sleep(0.05)
+
+
+# helper for converting rings to strip and SHOW
+def writeRingsToStrip(strip, rings):
+    current_ring_index = 0
+    forward = True
+    for ring in rings:
+        for i in range(ring.num_pixels):
+            if forward:
+                strip.setPixelColor(current_ring_index + i, ring.pixels[i])
+            else:
+                strip.setPixelColor(current_ring_index + ring.num_pixels - 1 - i, ring.pixels[i])
+            current_ring_index += ring.num_pixels
+            forward = not forward
+    strip.show()
+
+
 
 class LedsManager():
     def __init__(self):
@@ -191,6 +232,15 @@ class LedsManager():
         self.stop_event = threading.Event()
         self.animation_thread = None
         self.running_animation = None
+        self.rings = [
+            Ring(41),
+            Ring(41),
+            Ring(41),
+            Ring(41), #middle ring
+            Ring(41),
+            Ring(41),
+            Ring(41),
+        ]    
         
         #chatGPT animations
         self.idle_animations = [colorFade, spaceshipLaunch, meteorShower, fireworks, colorWipeRandom, particalAccelerator]
@@ -208,6 +258,7 @@ class LedsManager():
     def _run_animation(self, animation: callable, **kwargs):
         try:
             self.running_animation = animation
+            kwargs['rings'] = self.rings  # Add 'rings' argument to kwargs
             animation(self.strip, stop_event=self.stop_event, **kwargs)
         except Exception as e:
             log.error("Error running leds animation: %s", e)
@@ -226,6 +277,7 @@ class LedsManager():
             self.run_animation(animation)
 
 
+
 app = Flask(__name__)
 leds_manager = LedsManager()
 
@@ -233,6 +285,12 @@ leds_manager = LedsManager()
 def maintain():
     leds_manager.maintainance()
     return 'Maintenance mode activated'
+
+
+@app.route('/shzira')
+def shzira():
+    leds_manager.run_animation(meteorShower)
+    return 'SHZIRA activated'
 
 if __name__ == '__main__':
     app.run()
