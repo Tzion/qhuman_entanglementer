@@ -21,7 +21,7 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 class Ring:
     def __init__(self, num_pixels):
         self.num_pixels = num_pixels
-        self.pixels = [Color(0,0,0)] * num_pixels
+        self.pixels = [Color(0,0,0) for _ in range(num_pixels)]
         
     def setAllRingColor(self, color):
         for i in range(self.num_pixels):
@@ -43,7 +43,7 @@ def random_color():
     return Color(random.randint(0, 255), random.randint(0, 255), random.randint(0,255))
 
 
-def colorWipe(strip, stop_event, color=random_color(), wait_ms=50):
+def colorWipe(strip, rings,  stop_event, color=random_color(), wait_ms=50):
     """Wipe color across display a pixel at a time."""
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
@@ -53,7 +53,7 @@ def colorWipe(strip, stop_event, color=random_color(), wait_ms=50):
         time.sleep(wait_ms/1000.0)
 
 
-def theaterChase(strip, stop_event, color=random_color(), wait_ms=50, iterations=10):
+def theaterChase(strip, rings,  stop_event, color=random_color(), wait_ms=50, iterations=10):
     """Movie theater light style chaser animation."""
     for j in range(iterations):
         for q in range(3):
@@ -67,7 +67,7 @@ def theaterChase(strip, stop_event, color=random_color(), wait_ms=50, iterations
                 strip.setPixelColor(i+q, 0)
 
 
-def rainbow(strip, stop_event, wait_ms=20, iterations=1):
+def rainbow(strip, rings, stop_event, wait_ms=20, iterations=1):
     """Draw rainbow that fades across all pixels at once."""
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
@@ -77,7 +77,7 @@ def rainbow(strip, stop_event, wait_ms=20, iterations=1):
             return
         time.sleep(wait_ms/1000.0)
 
-def rainbowCycle(strip, stop_event, wait_ms=20, iterations=5):
+def rainbowCycle(strip,  rings, stop_event, wait_ms=20, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
@@ -87,7 +87,7 @@ def rainbowCycle(strip, stop_event, wait_ms=20, iterations=5):
             return
         time.sleep(wait_ms/1000.0)
 
-def theaterChaseRainbow(strip, stop_event, wait_ms=50):
+def theaterChaseRainbow(strip, rings, stop_event, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
     for j in range(256):
         for q in range(3):
@@ -102,7 +102,7 @@ def theaterChaseRainbow(strip, stop_event, wait_ms=50):
 
 
 # ChatGPT animations
-def colorFade(strip, stop_event, color_start=random_color(), color_end=random_color(), wait_ms=50, steps=100):
+def colorFade(strip, rings,  stop_event, color_start=random_color(), color_end=random_color(), wait_ms=50, steps=100):
     """Fade between two colors."""
     r_start, g_start, b_start = color_start >> 16, (color_start >> 8) & 255, color_start & 255
     r_end, g_end, b_end = color_end >> 16, (color_end >> 8) & 255, color_end & 255
@@ -121,7 +121,7 @@ def colorFade(strip, stop_event, color_start=random_color(), color_end=random_co
             return
         time.sleep(wait_ms/1000.0)
 
-def spaceshipLaunch(strip, stop_event, color=random_color(), wait_ms=50):
+def spaceshipLaunch(strip, rings,  stop_event, color=random_color(), wait_ms=50):
     """Spaceship launch animation."""
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
@@ -136,7 +136,7 @@ def spaceshipLaunch(strip, stop_event, color=random_color(), wait_ms=50):
             return
         time.sleep(wait_ms/1000.0)
 
-def meteorShower(strip, stop_event, color=random_color(), wait_ms=18, iterations=randint(2,13)):
+def meteorShower(strip, rings,  stop_event, color=random_color(), wait_ms=18, iterations=randint(2,13)):
     """Meteor shower animation."""
     for j in range(iterations):
         for i in range(0, strip.numPixels(), 3):
@@ -150,7 +150,7 @@ def meteorShower(strip, stop_event, color=random_color(), wait_ms=18, iterations
             if stop_event.is_set():
                 return
 
-def fireworks(strip, stop_event, wait_ms=randint(8,78), iterations=randint(2,8)):
+def fireworks(strip, rings,  stop_event, wait_ms=randint(8,78), iterations=randint(2,8)):
     """Fireworks animation."""
     for j in range(iterations):
         for i in range(strip.numPixels()):
@@ -165,7 +165,7 @@ def fireworks(strip, stop_event, wait_ms=randint(8,78), iterations=randint(2,8))
         if stop_event.is_set():
             return
 
-def colorWipeRandom(strip, stop_event, wait_ms=10):
+def colorWipeRandom(strip, rings,  stop_event, wait_ms=10):
     """Wipe random color across display a pixel at a time."""
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, random_color())
@@ -174,7 +174,7 @@ def colorWipeRandom(strip, stop_event, wait_ms=10):
             return
         time.sleep(wait_ms/1000.0)
 
-def particalAccelerator(strip, stop_event, color=random_color(), wait_ms=50):
+def particalAccelerator(strip, rings, stop_event, color=random_color(), wait_ms=50):
     """Particle accelerator animation."""
     for i in range(strip.numPixels()):
         strip.setPixelColor(i, color)
@@ -191,20 +191,25 @@ def particalAccelerator(strip, stop_event, color=random_color(), wait_ms=50):
             return
         time.sleep(wait_ms/1000.0)
 
-def shziraAnimation(strip, stop_event, rings):
+def shziraAnimation(strip,  rings, stop_event):
     """Shzira animation."""
-    index = 0
-    waveColor = random_color()
+    # index = 0
+    # waveColor = random_color()
+    # while not stop_event.is_set():
+    #     rings[index].setAllRingColor(waveColor)
+    #     rings[-1-index].setAllRingColor(waveColor)
+    #     writeRingsToStrip(strip, rings)
+    #     if(index>=4):
+    #         index = 0
+    #         waveColor = random_color()
+    #     else: 
+    #         index += 1
+    #     time.sleep(0.05)
     while not stop_event.is_set():
-        rings[0].setAllRingColor(waveColor)
-        rings[-1-index].setAllRingColor(waveColor)
+        for i in range(len(rings)):
+            rings[i].setAllRingColor(random_color())
         writeRingsToStrip(strip, rings)
-        if(index>=4):
-            index = 0
-            waveColor = random_color()
-        else: 
-            index += 1
-        time.sleep(0.05)
+        time.sleep(2)
 
 
 # helper for converting rings to strip and SHOW
@@ -213,6 +218,7 @@ def writeRingsToStrip(strip, rings):
     forward = True
     for ring in rings:
         for i in range(ring.num_pixels):
+            # set strip pixels between [current_ring_index, and current_ring_index + ring.num_pixels]
             if forward:
                 strip.setPixelColor(current_ring_index + i, ring.pixels[i])
             else:
@@ -258,8 +264,7 @@ class LedsManager():
     def _run_animation(self, animation: callable, **kwargs):
         try:
             self.running_animation = animation
-            kwargs['rings'] = self.rings  # Add 'rings' argument to kwargs
-            animation(self.strip, stop_event=self.stop_event, **kwargs)
+            animation(self.strip, self.rings, stop_event=self.stop_event, **kwargs)
         except Exception as e:
             log.error("Error running leds animation: %s", e)
         finally:
