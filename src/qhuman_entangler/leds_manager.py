@@ -223,8 +223,9 @@ def writeRingsToStrip(strip, rings):
                 strip.setPixelColor(current_ring_index + i, ring.pixels[i])
             else:
                 strip.setPixelColor(current_ring_index + ring.num_pixels - 1 - i, ring.pixels[i])
-            current_ring_index += ring.num_pixels
-            forward = not forward
+                
+        current_ring_index += ring.num_pixels
+        forward = not forward
     strip.show()
 
 
