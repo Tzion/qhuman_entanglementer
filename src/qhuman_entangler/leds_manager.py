@@ -241,7 +241,7 @@ class LedsManager():
         self.running_animation = None
         self.rings = [
             Ring(41),
-            Ring(42),
+            Ring(40),
             Ring(41),
             Ring(41), #middle ring
             Ring(41),
