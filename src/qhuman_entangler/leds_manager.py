@@ -191,7 +191,7 @@ def particalAccelerator(strip, rings, stop_event, color=random_color(), wait_ms=
             return
         time.sleep(wait_ms/1000.0)
 
-def shziraAnimation(strip,  rings, duration_ms):
+def entanglement(strip,  rings, duration_ms):
     """Shzira animation."""
     index = 0
     waveColor = random_color()
@@ -240,7 +240,8 @@ class LedsManager():
         log.info('Initializing leds manager')
         self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         self.strip.begin()
-        self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow]
+        self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow,
+                                colorFade, spaceshipLaunch, meteorShower, fireworks, colorWipeRandom, particalAccelerator]
         self.stop_event = threading.Event()
         self.animation_thread = None
         self.running_animation = None
@@ -253,9 +254,6 @@ class LedsManager():
             Ring(41),
             Ring(41),
         ]    
-        
-        #chatGPT animations
-        self.idle_animations = [colorFade, spaceshipLaunch, meteorShower, fireworks, colorWipeRandom, particalAccelerator]
     
     def run_animation(self, animation: callable, **kwargs):
         log.debug("Running leds animation in the background: %s by thread: %s", animation.__name__, 
@@ -282,7 +280,7 @@ class LedsManager():
         if self.animation_thread is not None:
             self.animation_thread.join()
 
-    def maintainance(self):
+    def idle(self):
         if self.running_animation is None:
             animation = random.choice(self.idle_animations)
             self.run_animation(animation)
@@ -292,17 +290,17 @@ class LedsManager():
 app = Flask(__name__)
 leds_manager = LedsManager()
 
-@app.route('/maintain')
-def maintain():
-    leds_manager.maintainance()
+@app.route('/idle')
+def idle():
+    leds_manager.idle()
     return 'Maintenance mode activated'
 
 
-@app.route('/shzira')
-def shzira():
+@app.route('/entanglement')
+def run_entanglement():
     duration_ms = int(request.args.get('duration_ms', 0))
-    leds_manager.run_animation(shziraAnimation, duration_ms=duration_ms)
-    return 'SHZIRA activated'
+    leds_manager.run_animation(entanglement, duration_ms=duration_ms)
+    return 'QUANTHUMANAZING!'
 
 if __name__ == '__main__':
     app.run()

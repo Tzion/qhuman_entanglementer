@@ -87,7 +87,7 @@ def leds_maintain():
     current_time = time.time()
     if current_time - last_execution_time >= 30:
         try:
-            response = requests.get('http://localhost:5000/maintain')
+            response = requests.get('http://localhost:5000/idle')
             log.info('Response from leds maintenance: %s', response.text)
             last_execution_time = current_time
         except Exception as e:
