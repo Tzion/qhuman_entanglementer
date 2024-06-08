@@ -4,6 +4,7 @@ from audio_manager import AudioPlayer
 import RPi.GPIO as GPIO
 import time
 import threading
+import requests
 
 class QuantumTunnel(Subscriber):
     def __init__(self):
@@ -23,9 +24,13 @@ class QuantumTunnel(Subscriber):
             self.handle_contact_event(event)
 
     def handle_contact_event(self, event):
-        # Add your code here to handle the 'contact' event
         if event.value == GPIO.HIGH:
-            self.audio_player.play_sound("media/sound/entanglement_1.mp3")
+            try:
+                self.audio_player.play_sound("media/sound/entanglement_1.mp3")
+                response = requests.get('http://localhost:5000/shzira')
+                log.debug('Response from shzira: %s', response)
+            except Exception as e:
+                log.error('Error while calling leds maintenance: %s', e)
 
     def handle_explain_event(self, event):
         if event.value == GPIO.LOW:
