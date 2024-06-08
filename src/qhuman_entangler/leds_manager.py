@@ -5,7 +5,6 @@ from random import randint
 import threading
 from logger import logging
 from flask import Flask
-from qhuman_entangler.leds_manager import LedsManager
 log = logging.getLogger(__name__)
 
 
@@ -90,62 +89,6 @@ def theaterChaseRainbow(strip, stop_event, wait_ms=50):
             time.sleep(wait_ms/1000.0)
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
-
-
-class LedsManager():
-    def __init__(self):
-        log.info('Initializing leds manager')
-        self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-        self.strip.begin()
-        self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow]
-        self.stop_event = threading.Event()
-        self.animation_thread = None
-        self.running_animation = None
-        
-        #chatGPT animations
-        self.idle_animations = [colorFade, spaceshipLaunch, meteorShower, fireworks, colorWipeRandom, particalAccelerator]
-    
-    def run_animation(self, animation: callable, **kwargs):
-        log.debug("Running leds animation in the background: %s by thread: %s", animation.__name__, 
-                 threading.get_ident())
-        self.stop_event.set()  # Signal the current animation to stop
-        if self.animation_thread is not None:
-            self.animation_thread.join()  # Wait for the current animation to stop
-        self.stop_event.clear()  # Reset the stop event for the next animation
-        self.animation_thread = threading.Thread(target=self._run_animation, args=(animation,), kwargs=kwargs)
-        self.animation_thread.start()
-
-    def _run_animation(self, animation: callable, **kwargs):
-        try:
-            self.running_animation = animation
-            animation(self.strip, stop_event=self.stop_event, **kwargs)
-        except Exception as e:
-            log.error("Error running leds animation: %s", e)
-        finally:
-            self.running_animation = None
-
-    def stop_current_animation(self):
-        log.info('signaling the current animation to stop')
-        self.stop_event.set()
-        if self.animation_thread is not None:
-            self.animation_thread.join()
-
-    def maintainance(self):
-        if self.running_animation is None:
-            animation = random.choice(self.idle_animations)
-            self.run_animation(animation)
-
-
-app = Flask(__name__)
-leds_manager = LedsManager()
-
-@app.route('/maintain')
-def maintain():
-    leds_manager.maintainance()
-    return 'Maintenance mode activated'
-
-if __name__ == '__main__':
-    app.run()
 
 
 # ChatGPT animations
@@ -237,4 +180,60 @@ def particalAccelerator(strip, stop_event, color=random_color(), wait_ms=50):
         if stop_event.is_set():
             return
         time.sleep(wait_ms/1000.0)
+
+
+class LedsManager():
+    def __init__(self):
+        log.info('Initializing leds manager')
+        self.strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+        self.strip.begin()
+        self.idle_animations = [colorWipe, theaterChase, rainbow, rainbowCycle, theaterChaseRainbow]
+        self.stop_event = threading.Event()
+        self.animation_thread = None
+        self.running_animation = None
+        
+        #chatGPT animations
+        self.idle_animations = [colorFade, spaceshipLaunch, meteorShower, fireworks, colorWipeRandom, particalAccelerator]
+    
+    def run_animation(self, animation: callable, **kwargs):
+        log.debug("Running leds animation in the background: %s by thread: %s", animation.__name__, 
+                 threading.get_ident())
+        self.stop_event.set()  # Signal the current animation to stop
+        if self.animation_thread is not None:
+            self.animation_thread.join()  # Wait for the current animation to stop
+        self.stop_event.clear()  # Reset the stop event for the next animation
+        self.animation_thread = threading.Thread(target=self._run_animation, args=(animation,), kwargs=kwargs)
+        self.animation_thread.start()
+
+    def _run_animation(self, animation: callable, **kwargs):
+        try:
+            self.running_animation = animation
+            animation(self.strip, stop_event=self.stop_event, **kwargs)
+        except Exception as e:
+            log.error("Error running leds animation: %s", e)
+        finally:
+            self.running_animation = None
+
+    def stop_current_animation(self):
+        log.info('signaling the current animation to stop')
+        self.stop_event.set()
+        if self.animation_thread is not None:
+            self.animation_thread.join()
+
+    def maintainance(self):
+        if self.running_animation is None:
+            animation = random.choice(self.idle_animations)
+            self.run_animation(animation)
+
+
+app = Flask(__name__)
+leds_manager = LedsManager()
+
+@app.route('/maintain')
+def maintain():
+    leds_manager.maintainance()
+    return 'Maintenance mode activated'
+
+if __name__ == '__main__':
+    app.run()
 
