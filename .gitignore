@@ -6,3 +6,4 @@ media/speech/test.mp3
 venv_pi/
 .vscode/arduino.json
 src/qhuman_entangler/__pycache__/**
+jobs/connect-bt-speaker.log
