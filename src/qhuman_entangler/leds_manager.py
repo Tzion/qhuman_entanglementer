@@ -191,7 +191,7 @@ def particalAccelerator(strip, rings, stop_event, color=random_color(), wait_ms=
             return
         time.sleep(wait_ms/1000.0)
 
-def entanglement(strip,  rings, duration_ms):
+def entanglement(strip,  rings, duration_ms, stop_event):
     """Shzira animation."""
     index = 0
     waveColor = random_color()
