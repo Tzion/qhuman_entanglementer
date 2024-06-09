@@ -1,0 +1,15 @@
+# place in /etc/systemd/system/
+# enable by 'sudo systemctl enable leds_server'
+[Unit]
+Description=LEDs Manager Service
+
+[Service]
+ExecStart=/bin/bash -c 'cd /home/zion/quanthuman-entangler; source venv_pi/bin/activate; sudo python src/qhuman_entangler/leds_manager.py'
+WorkingDirectory=/home/zion/quanthuman-entangler
+StandardOutput=file:/home/zion/leds_server.log
+StandardError=file:/home/zion/leds_server.log
+Restart=always
+User=zion
+
+[Install]
+WantedBy=multi-user.target
