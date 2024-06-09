@@ -1,5 +1,6 @@
 # place in /etc/systemd/system/
-# enable by 'sudo systemctl enable quantum_tunnel.service'
+# when running as service it's making same errors as it is running with sudo privileges (pbm pygame buffers) - so we'll run it using chrontab job
+
 [Unit]
 Description=Quantum Tunnel Service
 
