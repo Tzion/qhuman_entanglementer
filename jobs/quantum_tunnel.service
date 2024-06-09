@@ -1,0 +1,15 @@
+# place in /etc/systemd/system/
+# enable by 'sudo systemctl enable quantum_tunnel.service'
+[Unit]
+Description=Quantum Tunnel Service
+
+[Service]
+ExecStart=/bin/bash -c 'cd /home/zion/quanthuman-entangler; source venv_pi/bin/activate; python src/qhuman_entangler/quantum_tunnel.py'
+WorkingDirectory=/home/zion/quanthuman-entangler
+StandardOutput=file:/home/zion/quantum_tunnel.log
+StandardError=file:/home/zion/quantum_tunnel.log
+Restart=always
+User=zion
+
+[Install]
+WantedBy=multi-user.target
