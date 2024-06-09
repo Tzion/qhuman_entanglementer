@@ -12,7 +12,7 @@ class TestAudioPlayers(unittest.TestCase):
         self.audio_player: BaseAudioPlayer = BaseAudioPlayer()
 
     def test_play_sound(self):
-        sound_file = "media/sound/test.mp3"
+        sound_file = "media/test/test.mp3"
         self.audio_player.play_sound(sound_file)
 
     def test_play_speech(self):
