@@ -45,6 +45,7 @@ class AudioPlayer(AudioPlayerInterface):
         self.play_sound(track, wait_till_done=True)
 
     def play_explain(self):
+        self.stop()
         track = pick_track("media/speech/")
         self.play_sound(track, wait_till_done=False)
 
