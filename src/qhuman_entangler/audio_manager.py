@@ -42,7 +42,7 @@ class AudioPlayer(AudioPlayerInterface):
         except requests.exceptions.RequestException as e:
             log.error('Error while sending entanglement request to led server: %s', e)
         log.debug('Response from led server: %s', response)
-        self.play_sound(track, wait_till_done=True)
+        self.play_sound(track, wait_till_done=False)
 
     def play_explain(self):
         self.stop()
