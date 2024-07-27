@@ -210,6 +210,8 @@ def entanglement(strip,  rings, duration_ms, stop_event):
             index += 1
         time_left = (duration_ms / 1000) - (time.time() - start_time)
         time.sleep(0.07)
+        if stop_event.is_set():
+            return
     # while not stop_event.is_set():
     #     for i in range(len(rings)):
     #         rings[i].setAllRingColor(random_color())
