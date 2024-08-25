@@ -1,10 +1,16 @@
+#include <algorithm>
 int voltageSensorPin = A7;
 int voltageSensorValue = 0;
 
-const int numSamples = 46;
-const int initialVoltageEstimation = 533; // guessig the initial voltage (~2.4V)
+const int initialVoltageEstimation = 1020; // guessig the initial voltage (~2.4V)
+const int SampleFrequency = 100; // in Herz
+const int DesiredActivationTime = 300; // in ms, this is actually the maximal time and the actual time will be half of it
+
+int DeltaT = int(1000 / SampleFrequency);  // in ms
+int numSamples = int(Hz * DesiredActivationTime / 1000);  // number of samples to collect
 int voltageSamples[numSamples];  // using it as cyclic array, initialized with 0
 int sampleIndex = 0;
+
 const int outputPin = 13;
 bool pauseSampling = false;
 
@@ -27,38 +33,42 @@ void loop()
   voltageSensorValue = analogRead(voltageSensorPin);
   Serial.print("Voltage measured of pin A7:");
   Serial.println(voltageSensorValue);
+
   if (voltageSensorValue == 0) {
     Serial.println("Voltage is 0 - wires may be disconnected - skipping measurement");
     digitalWrite(outputPin, LOW);
-    delay(500);
+    delay(DeltaT);  // Dynamic delay
     return;
   }
 
-// when there's contact (low voltage) we want to keep the average value as a reference point
-if (!pauseSampling) {
-  voltageSamples[sampleIndex] = voltageSensorValue;
-  sampleIndex = (sampleIndex + 1) % numSamples;
-}
-
-  int sum = 0;
-  for (int i = 0; i < numSamples; i++)
-  {
-    sum += voltageSamples[i];
+  // when there's contact (low voltage), collect samples
+  if (!pauseSampling) {
+    voltageSamples[sampleIndex] = voltageSensorValue;
+    sampleIndex = (sampleIndex + 1) % numSamples;
   }
-  int samplesAverage = sum / numSamples;
-  Serial.print("Average voltage: ");
-  Serial.println(samplesAverage);
 
-  if (voltageSensorValue < samplesAverage * .88) {
+  // Sort the samples
+  int sortedSamples[numSamples];
+  memcpy(sortedSamples, voltageSamples, sizeof(voltageSamples));
+  std::sort(sortedSamples, sortedSamples + numSamples);
+
+  // Use the middle sample as the filtered value (median)
+  int filteredValue = sortedSamples[numSamples / 2];
+
+  Serial.print("Filtered voltage (median): ");
+  Serial.println(filteredValue);
+
+  if (voltageSensorValue < filteredValue * 0.8) {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
     pauseSampling = true;
   }
-  if (voltageSensorValue > samplesAverage * .92) {
+  if (voltageSensorValue > filteredValue * 0.4) {
     digitalWrite(outputPin, LOW);
     pauseSampling = false;
   }
+
   Serial.print("Output pin state: ");
   Serial.println(digitalRead(outputPin) == HIGH ? "HIGH" : "LOW");
-  delay(500);
+  delay(DeltaT);  // Dynamic delay
 }
