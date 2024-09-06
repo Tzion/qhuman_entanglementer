@@ -2,8 +2,6 @@ int voltageSensorPin = A7;
 int voltageSensorValue = 0;
 
 const int initialVoltageEstimation = 500; // 1024 is about 5V
-const int sampleFrequencyHz = 100;
-const int desiredActivationTime = 300; // in ms, this is actually the maximal time and the actual time will be half of it
 
 int delayMs = 50;
 const int numSamples = 400;
@@ -44,16 +42,18 @@ void loop()
   collectSample(voltageSensorValue);
   logSamples(logFreqMs);
 
-  int medianVoltage = calcMedian();
-  print("Median voltage: %d", medianVoltage);
+  int LongMedianVoltage = calcMedian(numSamples);
+  int shortMedianVoltage = calcMedian(15);
 
-  if (voltageSensorValue < medianVoltage * 0.72)
+  print("Long Median voltage: %d short median: %d", LongMedianVoltage, shortMedianVoltage);
+
+  if (shortMedianVoltage < LongMedianVoltage * 0.72)
   {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
-    pauseSampling = true;
+    // pauseSampling = true;
   }
-  if (voltageSensorValue > medianVoltage * 0.8)
+  if (shortMedianVoltage > LongMedianVoltage * 0.8)
   {
     digitalWrite(outputPin, LOW);
     pauseSampling = false;
@@ -64,12 +64,16 @@ void loop()
   delay(delayMs); // Dynamic delay
 }
 
-int calcMedian()
+int calcMedian(int nLastSamples)
 {
-  int sortedSamples[numSamples];
-  memcpy(sortedSamples, voltageSamples, sizeof(voltageSamples));
-  sort(sortedSamples, numSamples);
-  int median = sortedSamples[numSamples / 2];
+  int sortedSamples[nLastSamples];
+  int startIndex = (sampleIndex - nLastSamples + numSamples) % numSamples;
+  for (int i = 0; i < nLastSamples; i++)
+  {
+    sortedSamples[i] = voltageSamples[(startIndex + i) % numSamples];
+  }
+  sort(sortedSamples, nLastSamples);
+  int median = sortedSamples[nLastSamples / 2];
   return median;
 }
 void sort(int *array, int size)
