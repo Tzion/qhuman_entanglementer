@@ -1,10 +1,10 @@
-from event_bus import KeyboardEventBus, Subscriber, GpioEventBus
+from event_bus import KeyboardEventBus, Subscriber, GpioEventBus, EventBus
 from logger import defaultLogger as log
 from audio_manager import AudioPlayer
 import RPi.GPIO as GPIO
 import time
+import random
 import threading
-import requests
 
 class QuantumTunnel(Subscriber):
     def __init__(self):
@@ -13,6 +13,7 @@ class QuantumTunnel(Subscriber):
         self.audio_player = AudioPlayer()
     
     def start(self):
+        self.audio_player.play_sound('media/sound/powerup-bubbles.mp3')
         pass
 
 
@@ -45,7 +46,17 @@ def main():
     # event_bus = KeyboardEventBus()
     event_bus = GpioEventBus()
     event_bus.subscribe(quantum_tunnel)
+    simulator = threading.Thread(target=simulate_events, args=(event_bus,))
+    simulator.start()
     event_bus.wait_for_events()
+
+def simulate_events(event_bus: EventBus):
+    while True:
+        sleep_for = time.sleep(random.randint(10, 60))
+        log.debug(f'Sleeping for {sleep_for} seconds')
+        event = SimpleNamespace(type=random.choice(['explain', 'contact']), value=random.choice([GPIO.HIGH, GPIO.LOW]), pint=random.choice([GpioEventBus.EXPLAIN_BUTTON_PIN, GpioEventBus.CONTACT_SENSOR_PIN]))
+        log.debug("Posting generated event: %s", event)
+        event_bus.post(event)
 
 if __name__ == "__main__":
     main()
