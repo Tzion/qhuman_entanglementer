@@ -43,17 +43,17 @@ void loop()
   logSamples(logFreqMs);
 
   int LongMedianVoltage = calcMedian(numSamples);
-  int shortMedianVoltage = calcMedian(15);
+  int shortAverageVoltage = calcMovingAverage(5);
 
-  print("Long Median voltage: %d short median: %d", LongMedianVoltage, shortMedianVoltage);
+  print("Long Median voltage: %d short average: %d", LongMedianVoltage, shortAverageVoltage);
 
-  if (shortMedianVoltage < LongMedianVoltage * 0.72)
+  if (shortAverageVoltage < LongMedianVoltage * 0.72)
   {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
     // pauseSampling = true;
   }
-  if (shortMedianVoltage > LongMedianVoltage * 0.8)
+  if (shortAverageVoltage > LongMedianVoltage * 0.8)
   {
     digitalWrite(outputPin, LOW);
     pauseSampling = false;
@@ -62,6 +62,15 @@ void loop()
   // Serial.print("Output pin state ");
   // Serial.println(digitalRead(outputPin) == HIGH ? "HIGH" : "LOW");
   delay(delayMs); // Dynamic delay
+}
+
+int calcMovingAverage(int nLastSamples) {
+  int sum = 0;
+  int startIndex = (sampleIndex - nLastSamples + numSamples) % numSamples;
+  for (int i = 0; i < nLastSamples; i++) {
+    sum += voltageSamples[(startIndex + i) % numSamples];
+  }
+  return sum / nLastSamples;
 }
 
 int calcMedian(int nLastSamples)
@@ -76,6 +85,7 @@ int calcMedian(int nLastSamples)
   int median = sortedSamples[nLastSamples / 2];
   return median;
 }
+
 void sort(int *array, int size)
 {
   for (int i = 0; i < size - 1; i++)
