@@ -4,7 +4,10 @@
 [Unit]
 Description=Quantum Tunnel Service
 
+
 [Service]
+Environment="HOME=/home/zion"
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
 ExecStart=/bin/bash -c 'cd /home/zion/quanthuman-entangler; source venv_pi/bin/activate; python src/qhuman_entangler/quantum_tunnel.py'
 WorkingDirectory=/home/zion/quanthuman-entangler
 StandardOutput=file:/home/zion/quantum_tunnel.log
