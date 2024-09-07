@@ -1,4 +1,4 @@
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s-%(name)s-%(levelname)s:: %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s-%(name)s-%(levelname)s:: %(message)s', filemode='a')
 defaultLogger = logging.getLogger('QuanthumanEntengler')

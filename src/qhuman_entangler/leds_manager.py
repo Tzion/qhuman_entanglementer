@@ -8,7 +8,6 @@ from flask import Flask, request
 log = logging.getLogger(__name__)
 
 app = Flask(__name__)
-leds_manager = LedsManager()
 
 # LED strip configuration:
 LED_COUNT      = 286      # Number of LED pixels.
@@ -292,6 +291,7 @@ class LedsManager():
 
 
 
+leds_manager = LedsManager()
 
 @app.route('/idle')
 def idle():
