@@ -8,6 +8,11 @@ import requests
 
 log = logging.getLogger(__name__)
 
+media_powerup = "media/powerup/"
+media_speech = "media/speech/"
+media_entanglement = "media/entanglement/"
+
+
 
 class AudioPlayerInterface:
     def play_sound(self, file_path: str):
@@ -33,9 +38,14 @@ class AudioPlayer(AudioPlayerInterface):
         self.mixer = pygame.mixer
         self.mixer.init()
 
+    def play_powerup(self):
+        track = pick_track(media_powerup)
+        self.play_sound(track)
+
+
     def play_entanglement_with_leds(self):
         self.stop() # stop any playing sound
-        track = pick_track("media/sound/")
+        track = pick_track(media_entanglement)
         duration_ms = pygame.mixer.Sound(track).get_length() * 1000  # may be waste to create Sound now and in play_sound()
         try:
             response = requests.get(f'http://localhost:5000/entanglement?duration_ms={duration_ms}', timeout=4)
@@ -46,7 +56,7 @@ class AudioPlayer(AudioPlayerInterface):
 
     def play_explain(self):
         self.stop()
-        track = pick_track("media/speech/")
+        track = pick_track(media_speech)
         self.play_sound(track, wait_till_done=False)
 
     def play_sound(self, file_path: str, wait_till_done=False):

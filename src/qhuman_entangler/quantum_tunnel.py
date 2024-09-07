@@ -1,10 +1,11 @@
+import time
+import random
+import threading
+from types import SimpleNamespace
 from event_bus import KeyboardEventBus, Subscriber, GpioEventBus, EventBus
 from logger import defaultLogger as log
 from audio_manager import AudioPlayer
 import RPi.GPIO as GPIO
-import time
-import random
-import threading
 
 class QuantumTunnel(Subscriber):
     def __init__(self):
@@ -13,8 +14,7 @@ class QuantumTunnel(Subscriber):
         self.audio_player = AudioPlayer()
     
     def start(self):
-        self.audio_player.play_sound('media/sound/powerup-bubbles.mp3')
-        pass
+        self.audio_player.play_powerup()
 
 
     def handle_event(self, event):
@@ -52,8 +52,9 @@ def main():
 
 def simulate_events(event_bus: EventBus):
     while True:
-        sleep_for = time.sleep(random.randint(10, 60))
+        sleep_for = random.randint(10, 60)
         log.debug(f'Sleeping for {sleep_for} seconds')
+        time.sleep(sleep_for)
         event = SimpleNamespace(type=random.choice(['explain', 'contact']), value=random.choice([GPIO.HIGH, GPIO.LOW]), pint=random.choice([GpioEventBus.EXPLAIN_BUTTON_PIN, GpioEventBus.CONTACT_SENSOR_PIN]))
         log.debug("Posting generated event: %s", event)
         event_bus.post(event)
