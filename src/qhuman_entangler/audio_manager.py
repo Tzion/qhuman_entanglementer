@@ -5,6 +5,7 @@ import io
 import logging
 import random
 import requests
+from typing import Tuple
 
 log = logging.getLogger(__name__)
 
@@ -27,26 +28,34 @@ class AudioPlayerInterface:
     def pause(self):
         pass
 
-def pick_track(folder):
-    audio_files = [file for file in os.listdir(folder) if file.endswith(('.mp3', '.wav', '.ogg'))]
-    return folder + random.choice(audio_files)
-
 class AudioPlayer(AudioPlayerInterface):
     def __init__(self):
         log.info('Initializing audio player')
         pygame.init()
         self.mixer = pygame.mixer
         self.mixer.init()
+        self.init_sound_tracks()
+
+    def init_sound_tracks(self):
+        self.sound_tracks = {}
+        for folder in [media_powerup, media_speech, media_entanglement]:
+            log.debug(f'initialize tracks inside folder: {folder}')
+            audio_files = [file for file in os.listdir(folder) if file.endswith(('.mp3', '.wav', '.ogg'))]
+            self.sound_tracks[folder] = [(file, self.mixer.Sound(folder + file)) for file in audio_files]
+
+    def pick_track(self, folder) -> Tuple[str, pygame.mixer.Sound]:
+        tracks = self.sound_tracks[folder]
+        return random.choice(tracks)
+
 
     def play_powerup(self):
-        track = pick_track(media_powerup)
+        track = self.pick_track(media_powerup)
         self.play_sound(track)
-
 
     def play_entanglement_with_leds(self):
         self.stop() # stop any playing sound
-        track = pick_track(media_entanglement)
-        duration_ms = pygame.mixer.Sound(track).get_length() * 1000  # may be waste to create Sound now and in play_sound()
+        track = self.pick_track(media_entanglement)
+        duration_ms = track[1].get_length() * 1000
         try:
             response = requests.get(f'http://localhost:5000/entanglement?duration_ms={duration_ms}', timeout=4)
         except requests.exceptions.RequestException as e:
@@ -56,12 +65,12 @@ class AudioPlayer(AudioPlayerInterface):
 
     def play_explain(self):
         self.stop()
-        track = pick_track(media_speech)
+        track = self.pick_track(media_speech)
         self.play_sound(track, wait_till_done=False)
 
-    def play_sound(self, file_path: str, wait_till_done=False):
-        log.info('Playing sound: %s', file_path)
-        sound = pygame.mixer.Sound(file_path)
+    def play_sound(self, track: Tuple[str, pygame.mixer.Sound],  wait_till_done=False):
+        name, sound = track
+        log.info('Playing sound: %s', name)
         sound.play()
         if wait_till_done:
             pygame.time.wait(int(sound.get_length() * 1000))  # Wait for the sound to finish
@@ -81,9 +90,3 @@ class AudioPlayer(AudioPlayerInterface):
 
     def stop(self):
         pygame.mixer.stop()
-
-class RaspberryPiAudioPlayer(AudioPlayer):
-    pass
-
-class ComputerAudioPlayer(AudioPlayer):
-    pass
