@@ -49,12 +49,13 @@ void loop()
     longMedianVoltage = calcMedian(numSamples);
   }
   int meduiumMedianVoltage = calcMedian(20);
-  int referenceVoltage = max(longMedianVoltage, meduiumMedianVoltage); // the meduin used for faster recovery
-  int shortAverageVoltage = calcMovingAverage(9);
+  // int referenceVoltage = max(longMedianVoltage, meduiumMedianVoltage); // the meduin used for faster recovery
+  int referenceVoltage = 1023; // using Fixed reference voltage
+  int shortAverageVoltage = calcMovingAverage(14);
 
   print("Reference: %d (long=%d, meduim=%d), short average: %d", referenceVoltage, longMedianVoltage, meduiumMedianVoltage, shortAverageVoltage);
 
-  if (shortAverageVoltage < referenceVoltage * 0.72)
+  if (shortAverageVoltage < referenceVoltage * 0.69)
   {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
