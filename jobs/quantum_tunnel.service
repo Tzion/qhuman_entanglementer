@@ -8,10 +8,11 @@ Description=Quantum Tunnel Service
 [Service]
 Environment="HOME=/home/zion"
 Environment="XDG_RUNTIME_DIR=/run/user/1000"
-ExecStart=/bin/bash -c 'cd /home/zion/quanthuman-entangler; source venv_pi/bin/activate; python src/qhuman_entangler/quantum_tunnel.py'
 WorkingDirectory=/home/zion/quanthuman-entangler
-StandardOutput=file:/home/zion/quantum_tunnel.log
-StandardError=file:/home/zion/quantum_tunnel.log
+ExecStart=/bin/bash -c 'timestamp=$(date +"%%Y-%%m-%%d_%%H-%%M-%%S"); \
+    cd $HOME/quanthuman-entangler; \
+    source venv_pi/bin/activate; \
+    python src/qhuman_entangler/quantum_tunnel.py > $HOME/quanthuman-entangler/logs/quantum_tunnel_service_$timestamp.log 2>&1'
 Restart=always
 User=zion
 

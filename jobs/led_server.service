@@ -4,10 +4,12 @@
 Description=LEDs Manager Service
 
 [Service]
-ExecStart=/bin/bash -c 'cd /home/zion/quanthuman-entangler; source venv_pi/bin/activate; sudo python src/qhuman_entangler/leds_manager.py'
 WorkingDirectory=/home/zion/quanthuman-entangler
-StandardOutput=file:/home/zion/leds_server.log
-StandardError=file:/home/zion/leds_server.log
+Environment="HOME=/home/zion"
+ExecStart=/bin/bash -c 'timestamp=$(date +"%%Y-%%m-%%d_%%H-%%M-%%S"); \
+    cd $HOME/quanthuman-entangler; \
+    source venv_pi/bin/activate; \
+    sudo python src/qhuman_entangler/leds_manager.py > $HOME/quanthuman-entangler/logs/leds_server_service_$timestamp.log 2>&1'
 Restart=always
 User=zion
 
