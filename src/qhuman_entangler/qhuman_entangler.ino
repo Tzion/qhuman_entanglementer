@@ -3,18 +3,17 @@ int voltageSensorValue = 0;
 
 const int initialVoltageEstimation = 500; // 1024 is about 5V
 
-int delayMs = 50;
+int delayMs = 60;
 const int numSamples = 400;
 int voltageSamples[numSamples]; // using it as cyclic array
 int sampleIndex = 0;
 const int logFreqMs = 2000; // log every 2 seconds
 
 const int outputPin = 13;
-bool pauseLongSample = false;
-int longMedianVoltage = 0
+bool updateLongMedian = true;
+int longMedianVoltage = 0;
 
-    void
-    setup()
+void setup()
 {
   Serial.begin(9600);
   digitalWrite(outputPin, LOW);
@@ -44,8 +43,9 @@ void loop()
   collectSample(voltageSensorValue);
   logSamples(logFreqMs);
 
-  if (!pauseLongSample)
+  if (updateLongMedian)
   {
+    // in practice the long median will be updated with the 'bad' samples on first touch is lost TODO find other tactic to keep the reference
     longMedianVoltage = calcMedian(numSamples);
   }
   int meduiumMedianVoltage = calcMedian(20);
@@ -58,12 +58,12 @@ void loop()
   {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
-    pauseLongSample = true;
+    updateLongMedian = false;
   }
   if (shortAverageVoltage > referenceVoltage * 0.8)
   {
     digitalWrite(outputPin, LOW);
-    pauseLongSample = false;
+    updateLongMedian = true;
   }
 
   // Serial.print("Output pin state ");
