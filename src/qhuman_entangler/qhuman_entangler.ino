@@ -10,9 +10,11 @@ int sampleIndex = 0;
 const int logFreqMs = 2000; // log every 2 seconds
 
 const int outputPin = 13;
-bool pauseSampling = false;
+bool pauseLongSample = false;
+int longMedianVoltage = 0
 
-void setup()
+    void
+    setup()
 {
   Serial.begin(9600);
   digitalWrite(outputPin, LOW);
@@ -33,7 +35,7 @@ void loop()
   voltageSensorValue = analogRead(voltageSensorPin);
   if (voltageSensorValue == 0)
   {
-    Serial.println("Voltage is 0 - wires may be disconnected - skipping measurement");
+    Serial.println("Voltage is 0 - skipping measurement");
     digitalWrite(outputPin, LOW);
     delay(delayMs);
     return;
@@ -42,21 +44,26 @@ void loop()
   collectSample(voltageSensorValue);
   logSamples(logFreqMs);
 
-  int LongMedianVoltage = calcMedian(numSamples);
+  if (!pauseLongSample)
+  {
+    longMedianVoltage = calcMedian(numSamples);
+  }
+  int meduiumMedianVoltage = calcMedian(20);
+  int referenceVoltage = max(longMedianVoltage, meduiumMedianVoltage); // the meduin used for faster recovery
   int shortAverageVoltage = calcMovingAverage(5);
 
-  print("Long Median voltage: %d short average: %d", LongMedianVoltage, shortAverageVoltage);
+  print("Reference: %d (long=%d, meduim=%d), short average: %d", referenceVoltage, longMedianVoltage, meduiumMedianVoltage, shortAverageVoltage);
 
-  if (shortAverageVoltage < LongMedianVoltage * 0.72)
+  if (shortAverageVoltage < referenceVoltage * 0.76)
   {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
-    // pauseSampling = true;
+    pauseLongSample = true;
   }
-  if (shortAverageVoltage > LongMedianVoltage * 0.8)
+  if (shortAverageVoltage > referenceVoltage * 0.8)
   {
     digitalWrite(outputPin, LOW);
-    pauseSampling = false;
+    pauseLongSample = false;
   }
 
   // Serial.print("Output pin state ");
@@ -64,10 +71,12 @@ void loop()
   delay(delayMs); // Dynamic delay
 }
 
-int calcMovingAverage(int nLastSamples) {
+int calcMovingAverage(int nLastSamples)
+{
   int sum = 0;
   int startIndex = (sampleIndex - nLastSamples + numSamples) % numSamples;
-  for (int i = 0; i < nLastSamples; i++) {
+  for (int i = 0; i < nLastSamples; i++)
+  {
     sum += voltageSamples[(startIndex + i) % numSamples];
   }
   return sum / nLastSamples;
@@ -104,12 +113,8 @@ void sort(int *array, int size)
 
 void collectSample(int voltageSensorValue)
 {
-  // when there's contact (low voltage), collect samples
-  if (!pauseSampling)
-  {
-    voltageSamples[sampleIndex] = voltageSensorValue;
-    sampleIndex = (sampleIndex + 1) % numSamples;
-  }
+  voltageSamples[sampleIndex] = voltageSensorValue;
+  sampleIndex = (sampleIndex + 1) % numSamples;
 }
 
 void logSamples(int logFreqMs)
@@ -126,7 +131,6 @@ void logSamples(int logFreqMs)
     Serial.println();
   }
 }
-
 
 void print(const char *format, ...)
 {
