@@ -61,7 +61,7 @@ class AudioPlayer(AudioPlayerInterface):
         except requests.exceptions.RequestException as e:
             log.error('Error while sending entanglement request to led server: %s', e)
         log.debug('Response from led server: %s', response)
-        self.play_sound(track, wait_till_done=False)
+        self.play_sound(track, wait_till_done=True)
 
     def play_explain(self):
         self.stop()
@@ -89,4 +89,5 @@ class AudioPlayer(AudioPlayerInterface):
         pygame.mixer.pause()
 
     def stop(self):
+        log.debug('Stopping all sounds')
         pygame.mixer.stop()
