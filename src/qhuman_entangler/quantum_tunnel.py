@@ -46,8 +46,8 @@ def main():
     # event_bus = KeyboardEventBus()
     event_bus = GpioEventBus()
     event_bus.subscribe(quantum_tunnel)
-    simulator = threading.Thread(target=simulate_events, args=(event_bus,))
-    simulator.start()
+    # simulator = threading.Thread(target=simulate_events, args=(event_bus,))
+    # simulator.start()
     event_bus.wait_for_events()
 
 def simulate_events(event_bus: EventBus):
@@ -55,7 +55,7 @@ def simulate_events(event_bus: EventBus):
         sleep_for = random.randint(10, 60)
         log.debug(f'Sleeping for {sleep_for} seconds')
         time.sleep(sleep_for)
-        event = SimpleNamespace(type=random.choice(['explain', 'contact']), value=random.choice([GPIO.HIGH, GPIO.LOW]), pint=random.choice([GpioEventBus.EXPLAIN_BUTTON_PIN, GpioEventBus.CONTACT_SENSOR_PIN]))
+        event = SimpleNamespace(type=random.choice(['explain', 'contact']), value=random.choice([GPIO.HIGH, GPIO.LOW]))
         log.debug("Posting generated event: %s", event)
         event_bus.post(event)
 
