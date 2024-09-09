@@ -3,7 +3,7 @@ int voltageSensorValue = 0;
 
 const int initialVoltageEstimation = 500; // 1024 is about 5V
 
-int delayMs = 60;
+int delayMs = 50;
 const int numSamples = 400;
 int voltageSamples[numSamples]; // using it as cyclic array
 int sampleIndex = 0;
@@ -50,11 +50,11 @@ void loop()
   }
   int meduiumMedianVoltage = calcMedian(20);
   int referenceVoltage = max(longMedianVoltage, meduiumMedianVoltage); // the meduin used for faster recovery
-  int shortAverageVoltage = calcMovingAverage(5);
+  int shortAverageVoltage = calcMovingAverage(9);
 
   print("Reference: %d (long=%d, meduim=%d), short average: %d", referenceVoltage, longMedianVoltage, meduiumMedianVoltage, shortAverageVoltage);
 
-  if (shortAverageVoltage < referenceVoltage * 0.76)
+  if (shortAverageVoltage < referenceVoltage * 0.72)
   {
     Serial.println("Voltage drop detected");
     digitalWrite(outputPin, HIGH);
